@@ -64,7 +64,6 @@
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 space-y-3">
                 <div class="flex items-center justify-between pb-2 border-b border-slate-100">
                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Kendaraan Dinas Operasional (KDO)</span>
-                    <span class="text-[11px] text-slate-400">Entitas 1</span>
                 </div>
 
                 <!-- GET /api/kendaraan-dinas -->
@@ -128,7 +127,6 @@
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 space-y-3">
                 <div class="flex items-center justify-between pb-2 border-b border-slate-100">
                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Pegawai Negeri Sipil (PNS)</span>
-                    <span class="text-[11px] text-slate-400">Entitas 2</span>
                 </div>
 
                 <!-- GET /api/pegawai -->
@@ -158,7 +156,6 @@
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-4 space-y-3">
                 <div class="flex items-center justify-between pb-2 border-b border-slate-100">
                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Perangkat Daerah (PD / OPD)</span>
-                    <span class="text-[11px] text-slate-400">Entitas 3</span>
                 </div>
 
                 <!-- GET /api/perangkat-daerah -->

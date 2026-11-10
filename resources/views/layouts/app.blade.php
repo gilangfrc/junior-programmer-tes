@@ -42,6 +42,52 @@
             box-shadow: 0 4px 6px -1px rgba(185, 28, 28, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.3);
         }
 
+        /* Custom Enterprise Checkbox */
+        .custom-checkbox-wrapper input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .custom-checkbox-box {
+            width: 22px;
+            height: 22px;
+            border-radius: 7px;
+            border: 2px solid #cbd5e1;
+            background-color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-shrink: 0;
+        }
+        .custom-checkbox-wrapper:hover .custom-checkbox-box {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .custom-checkbox-wrapper input[type="checkbox"]:focus + .custom-checkbox-box {
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.18);
+            border-color: #2563eb;
+        }
+        .custom-checkbox-wrapper input[type="checkbox"]:checked + .custom-checkbox-box {
+            background-color: #2563eb;
+            border-color: #2563eb;
+            box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
+        }
+        .custom-checkbox-box svg {
+            width: 14px;
+            height: 14px;
+            color: #ffffff;
+            stroke-width: 3;
+            opacity: 0;
+            transform: scale(0.6);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .custom-checkbox-wrapper input[type="checkbox"]:checked + .custom-checkbox-box svg {
+            opacity: 1;
+            transform: scale(1);
+        }
+
         @media print {
             .no-print { display: none !important; }
             .print-only { display: block !important; }
@@ -163,15 +209,6 @@
             </div>
         </div>
 
-        <!-- Sidebar Footer Status -->
-        <div class="p-3.5 border-t border-slate-800 bg-slate-950/40 flex-shrink-0">
-            <div class="flex items-center space-x-2.5 px-2 py-1.5 rounded-lg bg-slate-800/40 text-[11px]">
-                <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
-                <div class="text-slate-400 truncate">
-                    <span class="font-semibold text-slate-300">MySQL Database</span>: pusadatin_tes
-                </div>
-            </div>
-        </div>
     </aside>
 
     <!-- Main Content Area Wrapper (Offset by Sidebar Width on Desktop) -->
@@ -187,7 +224,6 @@
 
                 <!-- General System Info -->
                 <div class="flex items-center space-x-2.5">
-                    <div class="w-2.5 h-2.5 rounded-full bg-blue-600 ring-4 ring-blue-100"></div>
                     <div>
                         <div class="flex items-center space-x-2">
                             <span class="text-xs font-black tracking-tight text-slate-900">Sistem Pengelolaan KDO</span>

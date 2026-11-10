@@ -8,9 +8,6 @@
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
             <div class="flex items-center space-x-2">
-                <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
-                    Entitas 2
-                </span>
                 <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">Pegawai Negeri Sipil (PNS)</h1>
             </div>
             <p class="text-sm text-slate-500 mt-1">Data aparatur sipil negara penanggung jawab kendaraan dinas operasional.</p>
@@ -65,62 +62,62 @@
     <!-- Table -->
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm min-w-[1000px]">
+            <table class="w-full text-left text-sm table-fixed">
                 <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-semibold border-b border-slate-200">
                     <tr>
-                        <th class="px-5 py-3.5 w-14 text-center whitespace-nowrap">No</th>
-                        <th class="px-5 py-3.5 w-64 whitespace-nowrap">Nama & NIP Pegawai</th>
-                        <th class="px-5 py-3.5 w-60 whitespace-nowrap">Jabatan & Golongan</th>
-                        <th class="px-5 py-3.5 w-56 whitespace-nowrap">Perangkat Daerah (Instansi)</th>
-                        <th class="px-5 py-3.5 w-40 whitespace-nowrap">Kontak</th>
-                        <th class="px-5 py-3.5 w-32 text-center whitespace-nowrap">KDO Dipegang</th>
-                        <th class="px-5 py-3.5 w-28 text-center whitespace-nowrap">Aksi</th>
+                        <th class="px-3.5 py-3.5 w-12 text-center whitespace-nowrap">No</th>
+                        <th class="px-3.5 py-3.5 w-[24%] whitespace-nowrap">Nama & NIP Pegawai</th>
+                        <th class="px-3.5 py-3.5 w-[23%] whitespace-nowrap">Jabatan & Golongan</th>
+                        <th class="px-3.5 py-3.5 w-[22%] whitespace-nowrap">Perangkat Daerah (Instansi)</th>
+                        <th class="px-3.5 py-3.5 w-[15%] whitespace-nowrap">Kontak</th>
+                        <th class="px-3.5 py-3.5 w-[8%] text-center whitespace-nowrap">KDO</th>
+                        <th class="px-3.5 py-3.5 w-[8%] text-center whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($pegawais as $index => $pegawai)
                     <tr class="hover:bg-slate-50/70 transition-colors">
-                        <td class="px-5 py-4 text-xs text-slate-400 font-mono text-center">
+                        <td class="px-3.5 py-3 text-xs text-slate-400 font-mono text-center">
                             {{ $pegawais->firstItem() + $index }}
                         </td>
-                        <td class="px-5 py-4">
-                            <a href="{{ route('pegawai.show', $pegawai) }}" class="font-bold text-slate-900 text-xs hover:text-blue-600 transition-colors block">
+                        <td class="px-3.5 py-3">
+                            <a href="{{ route('pegawai.show', $pegawai) }}" class="font-bold text-slate-900 text-xs hover:text-blue-600 transition-colors block truncate" title="{{ $pegawai->nama }}">
                                 {{ $pegawai->nama }}
                             </a>
-                            <div class="font-mono text-[11px] text-slate-400 mt-0.5">NIP. {{ $pegawai->nip }}</div>
+                            <div class="font-mono text-[11px] text-slate-400 mt-0.5 truncate" title="NIP: {{ $pegawai->nip }}">NIP. {{ $pegawai->nip }}</div>
                         </td>
-                        <td class="px-5 py-4 text-xs">
-                            <div class="font-medium text-slate-800">{{ $pegawai->jabatan }}</div>
-                            <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700">
+                        <td class="px-3.5 py-3 text-xs">
+                            <div class="font-medium text-slate-800 truncate" title="{{ $pegawai->jabatan }}">{{ $pegawai->jabatan }}</div>
+                            <span class="inline-block mt-0.5 px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 whitespace-nowrap">
                                 Gol. {{ $pegawai->golongan }}
                             </span>
                         </td>
-                        <td class="px-5 py-4 text-xs">
+                        <td class="px-3.5 py-3 text-xs">
                             <span class="font-medium text-slate-800 block truncate" title="{{ $pegawai->perangkatDaerah->nama_instansi }}">{{ $pegawai->perangkatDaerah->nama_instansi }}</span>
-                            <div class="text-[11px] text-slate-400">{{ $pegawai->perangkatDaerah->singkatan }}</div>
+                            <div class="text-[11px] text-slate-400 truncate" title="{{ $pegawai->perangkatDaerah->singkatan }}">{{ $pegawai->perangkatDaerah->singkatan }}</div>
                         </td>
-                        <td class="px-5 py-4 text-xs text-slate-600">
-                            <div>{{ $pegawai->no_hp ?? '-' }}</div>
-                            <div class="text-[11px] text-slate-400">{{ $pegawai->email ?? '-' }}</div>
+                        <td class="px-3.5 py-3 text-xs text-slate-600">
+                            <div class="truncate" title="{{ $pegawai->no_hp ?? '-' }}">{{ $pegawai->no_hp ?? '-' }}</div>
+                            <div class="text-[11px] text-slate-400 truncate" title="{{ $pegawai->email ?? '-' }}">{{ $pegawai->email ?? '-' }}</div>
                         </td>
-                        <td class="px-5 py-4 text-xs text-center">
+                        <td class="px-3.5 py-3 text-xs text-center whitespace-nowrap">
                             @if($pegawai->kendaraan_dinas_count > 0)
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 whitespace-nowrap">
                                     {{ $pegawai->kendaraan_dinas_count }} Unit
                                 </span>
                             @else
                                 <span class="text-slate-400 text-xs">-</span>
                             @endif
                         </td>
-                        <td class="px-5 py-4 text-xs text-center">
+                        <td class="px-3.5 py-3 text-xs text-center whitespace-nowrap">
                             <div class="flex items-center justify-center space-x-1">
-                                <a href="{{ route('pegawai.show', $pegawai) }}" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Lihat Detail">
+                                <a href="{{ route('pegawai.show', $pegawai) }}" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Lihat Detail Pegawai">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 </a>
-                                <a href="{{ route('pegawai.edit', $pegawai) }}" class="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors" title="Ubah Pegawai">
+                                <a href="{{ route('pegawai.edit', $pegawai) }}" class="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors" title="Ubah Data Pegawai">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                 </a>
-                                <button type="button" onclick="openDeleteModal('{{ route('pegawai.destroy', $pegawai) }}', 'Pegawai PNS: {{ $pegawai->nama }} (NIP. {{ $pegawai->nip }})', 'Jika pegawai ini sedang memegang kendaraan, tanggung jawab kendaraan akan otomatis dilepas.')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors" title="Hapus Pegawai">
+                                <button type="button" onclick="openDeleteModal('{{ route('pegawai.destroy', $pegawai) }}', 'Pegawai PNS: {{ $pegawai->nama }} (NIP. {{ $pegawai->nip }})', 'Jika pegawai ini sedang memegang kendaraan, tanggung jawab kendaraan akan otomatis dilepas.')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors" title="Hapus Data Pegawai">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                 </button>
                             </div>

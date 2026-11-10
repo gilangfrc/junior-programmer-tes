@@ -102,10 +102,16 @@
             </div>
         </div>
 
-        <div class="p-3.5 bg-slate-50 rounded-2xl border border-slate-100">
-            <label class="flex items-center space-x-3 text-xs text-slate-700 font-semibold cursor-pointer">
-                <input type="checkbox" name="status_aktif" value="1" checked class="rounded-lg border-slate-300 text-blue-600 focus:ring-blue-500 w-4 h-4">
-                <span>Status Pegawai Aktif (Memiliki wewenang ditugaskan memegang kendaraan dinas)</span>
+        <div class="p-4 bg-slate-50/80 hover:bg-blue-50/30 rounded-2xl border border-slate-200/80 transition-all">
+            <label class="custom-checkbox-wrapper flex items-center space-x-3.5 cursor-pointer select-none">
+                <input type="checkbox" name="status_aktif" value="1" checked id="status_aktif">
+                <div class="custom-checkbox-box">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                </div>
+                <div>
+                    <span class="text-xs font-bold text-slate-800 block">Status Pegawai Aktif</span>
+                    <span class="text-[11px] text-slate-400 block mt-0.5">Memiliki wewenang resmi untuk ditugaskan memegang Kendaraan Dinas Operasional (KDO)</span>
+                </div>
             </label>
         </div>
 
@@ -135,7 +141,7 @@
         if (val.length === 18) {
             nipCheckIcon.classList.remove('hidden');
             nipInput.classList.add('border-emerald-400');
-            nipFeedback.innerHTML = `<span class="text-emerald-700 font-semibold">✓ Format 18 digit NIP valid</span>`;
+            nipFeedback.innerHTML = `<span class="inline-flex items-center gap-1 text-emerald-700 font-semibold"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg> Format 18 digit NIP valid</span>`;
         } else if (val.length > 0) {
             nipCheckIcon.classList.add('hidden');
             nipInput.classList.remove('border-emerald-400');

@@ -135,59 +135,59 @@
             </div>
 
             <div class="overflow-x-auto flex-grow">
-                <table class="w-full text-left text-sm min-w-[650px]">
+                <table class="w-full text-left text-sm table-fixed">
                     <thead class="bg-slate-50/75 text-slate-500 text-xs uppercase font-semibold border-b border-slate-100">
                         <tr>
-                            <th class="px-5 py-3 whitespace-nowrap">Plat & Kendaraan</th>
-                            <th class="px-5 py-3 whitespace-nowrap">Perangkat Daerah</th>
-                            <th class="px-5 py-3 whitespace-nowrap">Penanggung Jawab (PNS)</th>
-                            <th class="px-5 py-3 whitespace-nowrap">Kondisi</th>
-                            <th class="px-5 py-3 text-right whitespace-nowrap">Aksi</th>
+                            <th class="px-4 py-3 w-[36%] whitespace-nowrap">Plat & Kendaraan</th>
+                            <th class="px-3 py-3 w-[22%] whitespace-nowrap">Perangkat Daerah</th>
+                            <th class="px-3 py-3 w-[24%] whitespace-nowrap">Penanggung Jawab</th>
+                            <th class="px-3 py-3 w-[10%] text-center whitespace-nowrap">Kondisi</th>
+                            <th class="px-3 py-3 w-[8%] text-right whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @forelse($kdoTerbaru as $kdo)
                         <tr class="hover:bg-slate-50/60 transition-colors">
-                            <td class="px-5 py-3.5">
-                                <div class="flex items-center space-x-3">
-                                    <span class="px-2 py-0.5 rounded font-mono font-bold text-xs bg-red-100 text-red-800 border border-red-200 shadow-sm whitespace-nowrap">
+                            <td class="px-4 py-3">
+                                <div class="flex items-center space-x-2.5 min-w-0">
+                                    <span class="px-2 py-0.5 rounded font-mono font-bold text-xs bg-red-100 text-red-800 border border-red-200 shadow-sm whitespace-nowrap shrink-0">
                                         {{ $kdo->no_polisi }}
                                     </span>
-                                    <div>
-                                        <div class="font-bold text-slate-900 text-xs">{{ $kdo->merek }} {{ $kdo->tipe }}</div>
-                                        <div class="text-[11px] text-slate-400">Thn {{ $kdo->tahun_produksi }} &bull; {{ $kdo->jenis_kendaraan }}</div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="font-bold text-slate-900 text-xs truncate" title="{{ $kdo->merek }} {{ $kdo->tipe }}">{{ $kdo->merek }} {{ $kdo->tipe }}</div>
+                                        <div class="text-[11px] text-slate-400 truncate">Thn {{ $kdo->tahun_produksi }} &bull; {{ $kdo->jenis_kendaraan }}</div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-5 py-3.5 text-xs">
-                                <span class="font-medium text-slate-800">{{ $kdo->perangkatDaerah->singkatan ?? $kdo->perangkatDaerah->nama_instansi }}</span>
+                            <td class="px-3 py-3 text-xs">
+                                <span class="font-medium text-slate-800 block truncate" title="{{ $kdo->perangkatDaerah->nama_instansi }}">{{ $kdo->perangkatDaerah->singkatan ?? $kdo->perangkatDaerah->nama_instansi }}</span>
                             </td>
-                            <td class="px-5 py-3.5 text-xs">
+                            <td class="px-3 py-3 text-xs">
                                 @if($kdo->penanggungJawab)
-                                    <div class="font-medium text-slate-800">{{ $kdo->penanggungJawab->nama }}</div>
-                                    <div class="text-[10px] text-slate-400">NIP: {{ $kdo->penanggungJawab->nip }}</div>
+                                    <div class="font-medium text-slate-800 truncate" title="{{ $kdo->penanggungJawab->nama }}">{{ $kdo->penanggungJawab->nama }}</div>
+                                    <div class="text-[10px] text-slate-400 font-mono truncate">NIP: {{ $kdo->penanggungJawab->nip }}</div>
                                 @else
-                                    <span class="inline-flex items-center text-[11px] text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full font-medium">
-                                        Belum ada pemegang
+                                    <span class="inline-flex items-center text-[11px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md font-medium border border-amber-200 whitespace-nowrap">
+                                        Belum ditugaskan
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-5 py-3.5 text-xs">
+                            <td class="px-3 py-3 text-xs text-center whitespace-nowrap">
                                 @if($kdo->kondisi === 'Baik')
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 whitespace-nowrap">
                                         Baik
                                     </span>
                                 @elseif($kdo->kondisi === 'Rusak Ringan')
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-800 whitespace-nowrap">
                                         Rusak Ringan
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-100 text-rose-800">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-800 whitespace-nowrap">
                                         Rusak Berat
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-5 py-3.5 text-right text-xs">
+                            <td class="px-3 py-3 text-right text-xs whitespace-nowrap">
                                 <a href="{{ route('kendaraan-dinas.show', $kdo) }}" class="text-blue-600 hover:text-blue-800 font-semibold">Detail</a>
                             </td>
                         </tr>
