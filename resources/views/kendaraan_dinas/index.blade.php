@@ -61,86 +61,77 @@
                 <input type="hidden" name="kondisi" value="{{ request('kondisi') }}">
             @endif
 
-            <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3">
-                <!-- Search Input with Auto-Clear Icon -->
-                <div class="flex-1 relative min-w-[280px]">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2.5">
+                <!-- Search Input with Embedded Cari Button (lg:col-span-4) -->
+                <div class="sm:col-span-2 lg:col-span-4 relative">
                     <input 
                         type="text" 
                         name="search" 
                         id="kdoSearchInput" 
                         value="{{ request('search') }}" 
                         autocomplete="off" 
-                        placeholder="Cari nomor polisi (plat), merek, tipe, atau pemegang..." 
-                        class="form-control-smooth w-full text-xs rounded-xl border border-slate-200 py-2.5 pl-9 pr-8 text-slate-800 placeholder:text-slate-400"
+                        placeholder="Cari plat nomor, merek, tipe, atau PNS..." 
+                        class="form-control-smooth w-full text-xs rounded-xl border border-slate-200 py-2.5 pl-9 pr-16 text-slate-800 placeholder:text-slate-400"
                     >
                     <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    @if(request('search'))
-                        <button type="button" onclick="document.getElementById('kdoSearchInput').value=''; document.getElementById('filterKdoForm').submit();" class="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 p-0.5" title="Hapus Pencarian">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                    @endif
+                    
+                    <button type="submit" class="absolute right-1 top-1 bottom-1 px-3 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-xs flex items-center justify-center">
+                        Cari
+                    </button>
                 </div>
 
-                <!-- Compact Dropdown Filter Controls -->
-                <div class="flex flex-wrap items-center gap-2">
-                    <!-- Perangkat Daerah Filter -->
-                    <div class="relative">
-                        <select name="perangkat_daerah_id" onchange="this.form.submit()" class="form-control-smooth appearance-none text-xs font-semibold rounded-xl border {{ request('perangkat_daerah_id') ? 'border-blue-500 bg-blue-50/70 text-blue-700' : 'border-slate-200 bg-slate-50/70 text-slate-700' }} py-2.5 pl-3.5 pr-8 cursor-pointer hover:bg-slate-100 transition-all">
-                            <option value="">Semua Instansi (OPD)</option>
-                            @foreach($perangkatDaerahs as $pd)
-                                <option value="{{ $pd->id }}" {{ request('perangkat_daerah_id') == $pd->id ? 'selected' : '' }}>
-                                    {{ $pd->singkatan ?? $pd->nama_instansi }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-slate-400">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </div>
+                <!-- Perangkat Daerah Filter (lg:col-span-2) -->
+                <div class="relative lg:col-span-2">
+                    <select name="perangkat_daerah_id" onchange="this.form.submit()" class="form-control-smooth appearance-none w-full text-xs font-semibold rounded-xl border {{ request('perangkat_daerah_id') ? 'border-blue-500 bg-blue-50/70 text-blue-700' : 'border-slate-200 bg-slate-50/70 text-slate-700' }} py-2.5 pl-3 pr-7 cursor-pointer hover:bg-slate-100 transition-all truncate">
+                        <option value="">Semua Instansi (OPD)</option>
+                        @foreach($perangkatDaerahs as $pd)
+                            <option value="{{ $pd->id }}" {{ request('perangkat_daerah_id') == $pd->id ? 'selected' : '' }}>
+                                {{ $pd->singkatan ?? $pd->nama_instansi }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-slate-400">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </div>
+                </div>
 
-                    <!-- Jenis Kendaraan Filter -->
-                    <div class="relative">
-                        <select name="jenis_kendaraan" onchange="this.form.submit()" class="form-control-smooth appearance-none text-xs font-semibold rounded-xl border {{ request('jenis_kendaraan') ? 'border-blue-500 bg-blue-50/70 text-blue-700' : 'border-slate-200 bg-slate-50/70 text-slate-700' }} py-2.5 pl-3.5 pr-8 cursor-pointer hover:bg-slate-100 transition-all">
-                            <option value="">Semua Jenis Kendaraan</option>
-                            <option value="Roda 4" {{ request('jenis_kendaraan') === 'Roda 4' ? 'selected' : '' }}>Roda 4 (Mobil Dinas)</option>
-                            <option value="Roda 2" {{ request('jenis_kendaraan') === 'Roda 2' ? 'selected' : '' }}>Roda 2 (Motor)</option>
-                            <option value="Roda 6 / Truk / Bus" {{ request('jenis_kendaraan') === 'Roda 6 / Truk / Bus' ? 'selected' : '' }}>Roda 6 / Bus / Truk</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-slate-400">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </div>
+                <!-- Jenis Kendaraan Filter (lg:col-span-2) -->
+                <div class="relative lg:col-span-2">
+                    <select name="jenis_kendaraan" onchange="this.form.submit()" class="form-control-smooth appearance-none w-full text-xs font-semibold rounded-xl border {{ request('jenis_kendaraan') ? 'border-blue-500 bg-blue-50/70 text-blue-700' : 'border-slate-200 bg-slate-50/70 text-slate-700' }} py-2.5 pl-3 pr-7 cursor-pointer hover:bg-slate-100 transition-all truncate">
+                        <option value="">Semua Jenis Kendaraan</option>
+                        <option value="Roda 4" {{ request('jenis_kendaraan') === 'Roda 4' ? 'selected' : '' }}>Roda 4 (Mobil)</option>
+                        <option value="Roda 2" {{ request('jenis_kendaraan') === 'Roda 2' ? 'selected' : '' }}>Roda 2 (Motor)</option>
+                        <option value="Roda 6 / Truk / Bus" {{ request('jenis_kendaraan') === 'Roda 6 / Truk / Bus' ? 'selected' : '' }}>Roda 6 / Truk</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-slate-400">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </div>
+                </div>
 
-                    <!-- Status Pemegang Filter -->
-                    <div class="relative">
-                        <select name="status_pemegang" onchange="this.form.submit()" class="form-control-smooth appearance-none text-xs font-semibold rounded-xl border {{ request('status_pemegang') ? 'border-blue-500 bg-blue-50/70 text-blue-700' : 'border-slate-200 bg-slate-50/70 text-slate-700' }} py-2.5 pl-3.5 pr-8 cursor-pointer hover:bg-slate-100 transition-all">
-                            <option value="">Semua Status Pemegang</option>
-                            <option value="assigned" {{ request('status_pemegang') === 'assigned' ? 'selected' : '' }}>Ada Pemegang PNS</option>
-                            <option value="unassigned" {{ request('status_pemegang') === 'unassigned' ? 'selected' : '' }}>Pool Dinas (Belum Ada)</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-slate-400">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </div>
+                <!-- Status Pemegang Filter (lg:col-span-2) -->
+                <div class="relative lg:col-span-2">
+                    <select name="status_pemegang" onchange="this.form.submit()" class="form-control-smooth appearance-none w-full text-xs font-semibold rounded-xl border {{ request('status_pemegang') ? 'border-blue-500 bg-blue-50/70 text-blue-700' : 'border-slate-200 bg-slate-50/70 text-slate-700' }} py-2.5 pl-3 pr-7 cursor-pointer hover:bg-slate-100 transition-all truncate">
+                        <option value="">Status Pemegang</option>
+                        <option value="assigned" {{ request('status_pemegang') === 'assigned' ? 'selected' : '' }}>Ada Pemegang PNS</option>
+                        <option value="unassigned" {{ request('status_pemegang') === 'unassigned' ? 'selected' : '' }}>Pool Dinas (Belum Ada)</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-slate-400">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </div>
+                </div>
 
-                    <!-- Sorting Order -->
-                    <div class="relative">
-                        <select name="sort" onchange="this.form.submit()" class="form-control-smooth appearance-none text-xs font-semibold rounded-xl border border-slate-200 bg-slate-50/70 text-slate-700 py-2.5 pl-3.5 pr-8 cursor-pointer hover:bg-slate-100 transition-all">
-                            <option value="terbaru" {{ request('sort') === 'terbaru' ? 'selected' : '' }}>Urut: Terbaru</option>
-                            <option value="terlama" {{ request('sort') === 'terlama' ? 'selected' : '' }}>Urut: Terlama</option>
-                            <option value="plat_asc" {{ request('sort') === 'plat_asc' ? 'selected' : '' }}>Plat Nomor (A-Z)</option>
-                            <option value="tahun_desc" {{ request('sort') === 'tahun_desc' ? 'selected' : '' }}>Tahun Terbaru</option>
-                            <option value="tahun_asc" {{ request('sort') === 'tahun_asc' ? 'selected' : '' }}>Tahun Terlama</option>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-slate-400">
-                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-                        </div>
+                <!-- Sorting Order (lg:col-span-2) -->
+                <div class="relative lg:col-span-2">
+                    <select name="sort" onchange="this.form.submit()" class="form-control-smooth appearance-none w-full text-xs font-semibold rounded-xl border border-slate-200 bg-slate-50/70 text-slate-700 py-2.5 pl-3 pr-7 cursor-pointer hover:bg-slate-100 transition-all truncate">
+                        <option value="terbaru" {{ request('sort') === 'terbaru' ? 'selected' : '' }}>Urut: Terbaru</option>
+                        <option value="terlama" {{ request('sort') === 'terlama' ? 'selected' : '' }}>Urut: Terlama</option>
+                        <option value="plat_asc" {{ request('sort') === 'plat_asc' ? 'selected' : '' }}>Plat (A-Z)</option>
+                        <option value="tahun_desc" {{ request('sort') === 'tahun_desc' ? 'selected' : '' }}>Tahun Terbaru</option>
+                        <option value="tahun_asc" {{ request('sort') === 'tahun_asc' ? 'selected' : '' }}>Tahun Terlama</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2 text-slate-400">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </div>
-
-                    <button type="submit" class="inline-flex items-center space-x-1.5 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-sm">
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                        <span>Cari</span>
-                    </button>
                 </div>
             </div>
         </form>
@@ -207,21 +198,30 @@
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm table-fixed">
+                <colgroup>
+                    <col class="w-12">
+                    <col class="w-[28%]">
+                    <col class="w-[21%]">
+                    <col class="w-[21%]">
+                    <col class="w-28">
+                    <col class="w-36">
+                    <col class="w-28">
+                </colgroup>
                 <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-semibold border-b border-slate-200">
                     <tr>
-                        <th class="px-3.5 py-3.5 w-12 text-center whitespace-nowrap">No</th>
-                        <th class="px-3.5 py-3.5 w-[26%] whitespace-nowrap">No. Polisi & Spesifikasi</th>
-                        <th class="px-3.5 py-3.5 w-[22%] whitespace-nowrap">Perangkat Daerah</th>
-                        <th class="px-3.5 py-3.5 w-[23%] whitespace-nowrap">PNS Penanggung Jawab</th>
-                        <th class="px-3.5 py-3.5 w-[11%] whitespace-nowrap">Warna & Tahun</th>
-                        <th class="px-3.5 py-3.5 w-[10%] text-center whitespace-nowrap">Kondisi</th>
-                        <th class="px-3.5 py-3.5 w-[8%] text-center whitespace-nowrap">Aksi</th>
+                        <th class="px-2 py-3.5 text-center whitespace-nowrap">No</th>
+                        <th class="px-3.5 py-3.5 whitespace-nowrap">No. Polisi & Spesifikasi</th>
+                        <th class="px-3.5 py-3.5 whitespace-nowrap">Perangkat Daerah</th>
+                        <th class="px-3.5 py-3.5 whitespace-nowrap">PNS Penanggung Jawab</th>
+                        <th class="px-3.5 py-3.5 whitespace-nowrap">Warna & Tahun</th>
+                        <th class="px-2 py-3.5 text-center whitespace-nowrap">Kondisi</th>
+                        <th class="px-2 py-3.5 text-center whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($kendaraanDinas as $index => $kdo)
                     <tr class="hover:bg-slate-50/70 transition-colors">
-                        <td class="px-3.5 py-3 text-xs text-slate-400 font-mono text-center">
+                        <td class="px-2 py-3 text-xs text-slate-400 font-mono text-center">
                             {{ $kendaraanDinas->firstItem() + $index }}
                         </td>
                         <td class="px-3.5 py-3">
@@ -258,26 +258,26 @@
                             <div class="truncate" title="{{ $kdo->warna }}">{{ $kdo->warna }}</div>
                             <div class="text-slate-400 text-[11px] whitespace-nowrap">Tahun {{ $kdo->tahun_produksi }}</div>
                         </td>
-                        <td class="px-3.5 py-3 text-xs text-center whitespace-nowrap">
+                        <td class="px-2 py-3 text-xs text-center whitespace-nowrap">
                             @if($kdo->kondisi === 'Baik')
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap" title="Kondisi: Baik (Siap Operasional)">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap" title="Kondisi: Baik (Siap Operasional)">
                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
                                     <span>Baik</span>
                                 </span>
                             @elseif($kdo->kondisi === 'Rusak Ringan')
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap" title="Kondisi: Rusak Ringan (Perlu Servis Rutin)">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap" title="Kondisi: Rusak Ringan (Perlu Servis Rutin)">
                                     <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
                                     <span>Rusak Ringan</span>
                                 </span>
                             @else
-                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap" title="Kondisi: Rusak Berat (Tidak Dapat Beroperasi)">
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap" title="Kondisi: Rusak Berat (Tidak Dapat Beroperasi)">
                                     <span class="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"></span>
                                     <span>Rusak Berat</span>
                                 </span>
                             @endif
                         </td>
-                        <td class="px-3.5 py-3 text-xs text-center whitespace-nowrap">
-                            <div class="flex items-center justify-center space-x-1">
+                        <td class="px-2 py-3 text-xs text-center whitespace-nowrap">
+                            <div class="inline-flex items-center justify-center space-x-1">
                                 <a href="{{ route('kendaraan-dinas.show', $kdo) }}" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Lihat Detail (KIB)">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 </a>

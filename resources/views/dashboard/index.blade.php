@@ -136,19 +136,26 @@
 
             <div class="overflow-x-auto flex-grow">
                 <table class="w-full text-left text-sm table-fixed">
+                    <colgroup>
+                        <col class="w-[36%]">
+                        <col class="w-[20%]">
+                        <col class="w-[22%]">
+                        <col class="w-28">
+                        <col class="w-16">
+                    </colgroup>
                     <thead class="bg-slate-50/75 text-slate-500 text-xs uppercase font-semibold border-b border-slate-100">
                         <tr>
-                            <th class="px-4 py-3 w-[36%] whitespace-nowrap">Plat & Kendaraan</th>
-                            <th class="px-3 py-3 w-[22%] whitespace-nowrap">Perangkat Daerah</th>
-                            <th class="px-3 py-3 w-[24%] whitespace-nowrap">Penanggung Jawab</th>
-                            <th class="px-3 py-3 w-[10%] text-center whitespace-nowrap">Kondisi</th>
-                            <th class="px-3 py-3 w-[8%] text-right whitespace-nowrap">Aksi</th>
+                            <th class="px-3.5 py-3 whitespace-nowrap">Plat & Kendaraan</th>
+                            <th class="px-3 py-3 whitespace-nowrap">Perangkat Daerah</th>
+                            <th class="px-3 py-3 whitespace-nowrap">Penanggung Jawab</th>
+                            <th class="px-2 py-3 text-center whitespace-nowrap">Kondisi</th>
+                            <th class="px-3 py-3 text-right whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @forelse($kdoTerbaru as $kdo)
                         <tr class="hover:bg-slate-50/60 transition-colors">
-                            <td class="px-4 py-3">
+                            <td class="px-3.5 py-3">
                                 <div class="flex items-center space-x-2.5 min-w-0">
                                     <span class="px-2 py-0.5 rounded font-mono font-bold text-xs bg-red-100 text-red-800 border border-red-200 shadow-sm whitespace-nowrap shrink-0">
                                         {{ $kdo->no_polisi }}
@@ -172,7 +179,7 @@
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-3 py-3 text-xs text-center whitespace-nowrap">
+                            <td class="px-2 py-3 text-xs text-center whitespace-nowrap">
                                 @if($kdo->kondisi === 'Baik')
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 whitespace-nowrap">
                                         Baik

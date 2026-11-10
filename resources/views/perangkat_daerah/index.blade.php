@@ -46,14 +46,22 @@
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm table-fixed">
+                <colgroup>
+                    <col class="w-28">
+                    <col class="w-[42%]">
+                    <col class="w-[28%]">
+                    <col class="w-24">
+                    <col class="w-24">
+                    <col class="w-28">
+                </colgroup>
                 <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-semibold border-b border-slate-200">
                     <tr>
-                        <th class="px-3.5 py-3.5 w-32 whitespace-nowrap">Kode & Singkatan</th>
-                        <th class="px-3.5 py-3.5 w-[38%] whitespace-nowrap">Nama Instansi Perangkat Daerah</th>
-                        <th class="px-3.5 py-3.5 w-[26%] whitespace-nowrap">Kepala Dinas / Pimpinan</th>
-                        <th class="px-3.5 py-3.5 w-24 text-center whitespace-nowrap">Total KDO</th>
-                        <th class="px-3.5 py-3.5 w-24 text-center whitespace-nowrap">Pegawai</th>
-                        <th class="px-3.5 py-3.5 w-20 text-center whitespace-nowrap">Aksi</th>
+                        <th class="px-3.5 py-3.5 whitespace-nowrap">Kode & Singkatan</th>
+                        <th class="px-3.5 py-3.5 whitespace-nowrap">Nama Instansi Perangkat Daerah</th>
+                        <th class="px-3.5 py-3.5 whitespace-nowrap">Kepala Dinas / Pimpinan</th>
+                        <th class="px-2 py-3.5 text-center whitespace-nowrap">Total KDO</th>
+                        <th class="px-2 py-3.5 text-center whitespace-nowrap">Pegawai</th>
+                        <th class="px-2 py-3.5 text-center whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -89,8 +97,8 @@
                                 {{ $pd->pegawais_count }} Orang
                             </a>
                         </td>
-                        <td class="px-3.5 py-3.5 text-xs text-center whitespace-nowrap">
-                            <div class="flex items-center justify-center space-x-1">
+                        <td class="px-2 py-3 text-xs text-center whitespace-nowrap">
+                            <div class="inline-flex items-center justify-center space-x-1">
                                 <a href="{{ route('perangkat-daerah.show', $pd) }}" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Lihat Detail Instansi">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 </a>

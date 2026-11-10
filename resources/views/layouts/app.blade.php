@@ -215,7 +215,7 @@
     <div class="lg:pl-64 flex-1 flex flex-col min-w-0 min-h-screen">
         
         <!-- Sticky Top Bar (Info Umum Sistem, Tanggal & Operator BMD) -->
-        <header class="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-4 sm:px-6 lg:px-8 flex items-center justify-between no-print">
+        <header class="h-16 bg-white border-b border-slate-200 sticky top-0 z-30 px-4 sm:px-6 lg:px-8 flex items-center justify-between no-print shadow-xs">
             <div class="flex items-center space-x-3">
                 <!-- Hamburger Button for Mobile -->
                 <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 focus:outline-none transition-colors" aria-label="Toggle Menu">
@@ -224,13 +224,10 @@
 
                 <!-- General System Info -->
                 <div class="flex items-center space-x-2.5">
-                    <div>
-                        <div class="flex items-center space-x-2">
-                            <span class="text-xs font-black tracking-tight text-slate-900">Sistem Pengelolaan KDO</span>
-                            <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">BMD Pemda</span>
-                        </div>
-                        <p class="text-[11px] text-slate-400 hidden sm:block">Inventarisasi & Pengawasan Fisik Kendaraan Operasional</p>
-                    </div>
+                    <span class="text-xs font-black tracking-tight text-slate-900">SIM-KDO</span>
+                    <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">BMD Pemda</span>
+                    <span class="hidden md:inline text-slate-300">|</span>
+                    <span class="hidden md:inline text-xs text-slate-500 font-medium">Sistem Pengelolaan Kendaraan Dinas Operasional</span>
                 </div>
             </div>
 

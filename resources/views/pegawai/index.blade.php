@@ -32,8 +32,8 @@
             <div>
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Perangkat Daerah</label>
                 <div class="relative">
-                    <select name="perangkat_daerah_id" class="form-control-smooth appearance-none w-full text-xs font-medium rounded-xl border border-slate-200 py-2.5 pl-3.5 pr-11 text-slate-800 bg-white cursor-pointer">
-                        <option value="">-- Semua Dinas/OPD --</option>
+                    <select name="perangkat_daerah_id" onchange="this.form.submit()" class="form-control-smooth appearance-none w-full text-xs font-medium rounded-xl border border-slate-200 py-2.5 pl-3.5 pr-11 text-slate-800 bg-white cursor-pointer">
+                        <option value="">Semua Dinas (OPD)</option>
                         @foreach($perangkatDaerahs as $pd)
                             <option value="{{ $pd->id }}" {{ request('perangkat_daerah_id') == $pd->id ? 'selected' : '' }}>
                                 {{ $pd->singkatan ?? $pd->nama_instansi }}
@@ -63,15 +63,24 @@
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm table-fixed">
+                <colgroup>
+                    <col class="w-12">
+                    <col class="w-[28%]">
+                    <col class="w-[22%]">
+                    <col class="w-[22%]">
+                    <col class="w-32">
+                    <col class="w-20">
+                    <col class="w-28">
+                </colgroup>
                 <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-semibold border-b border-slate-200">
                     <tr>
-                        <th class="px-3.5 py-3.5 w-12 text-center whitespace-nowrap">No</th>
-                        <th class="px-3.5 py-3.5 w-[24%] whitespace-nowrap">Nama & NIP Pegawai</th>
-                        <th class="px-3.5 py-3.5 w-[23%] whitespace-nowrap">Jabatan & Golongan</th>
-                        <th class="px-3.5 py-3.5 w-[22%] whitespace-nowrap">Perangkat Daerah (Instansi)</th>
-                        <th class="px-3.5 py-3.5 w-[15%] whitespace-nowrap">Kontak</th>
-                        <th class="px-3.5 py-3.5 w-[8%] text-center whitespace-nowrap">KDO</th>
-                        <th class="px-3.5 py-3.5 w-[8%] text-center whitespace-nowrap">Aksi</th>
+                        <th class="px-2 py-3.5 text-center whitespace-nowrap">No</th>
+                        <th class="px-3.5 py-3.5 whitespace-nowrap">Nama & NIP Pegawai</th>
+                        <th class="px-3.5 py-3.5 whitespace-nowrap">Jabatan & Golongan</th>
+                        <th class="px-3.5 py-3.5 whitespace-nowrap">Perangkat Daerah (Instansi)</th>
+                        <th class="px-3.5 py-3.5 whitespace-nowrap">Kontak</th>
+                        <th class="px-2 py-3.5 text-center whitespace-nowrap">KDO</th>
+                        <th class="px-2 py-3.5 text-center whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -100,7 +109,7 @@
                             <div class="truncate" title="{{ $pegawai->no_hp ?? '-' }}">{{ $pegawai->no_hp ?? '-' }}</div>
                             <div class="text-[11px] text-slate-400 truncate" title="{{ $pegawai->email ?? '-' }}">{{ $pegawai->email ?? '-' }}</div>
                         </td>
-                        <td class="px-3.5 py-3 text-xs text-center whitespace-nowrap">
+                        <td class="px-2 py-3 text-xs text-center whitespace-nowrap">
                             @if($pegawai->kendaraan_dinas_count > 0)
                                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800 whitespace-nowrap">
                                     {{ $pegawai->kendaraan_dinas_count }} Unit
@@ -109,8 +118,8 @@
                                 <span class="text-slate-400 text-xs">-</span>
                             @endif
                         </td>
-                        <td class="px-3.5 py-3 text-xs text-center whitespace-nowrap">
-                            <div class="flex items-center justify-center space-x-1">
+                        <td class="px-2 py-3 text-xs text-center whitespace-nowrap">
+                            <div class="inline-flex items-center justify-center space-x-1">
                                 <a href="{{ route('pegawai.show', $pegawai) }}" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Lihat Detail Pegawai">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 </a>
