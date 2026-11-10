@@ -10,24 +10,22 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | REST API Routes - Pengelolaan Kendaraan Dinas Operasional (KDO - BMD)
 |--------------------------------------------------------------------------
+| Seluruh rute API diberi name prefix 'api.' agar TIDAK bentrok dengan
+| rute Web Views (Blade) seperti kendaraan-dinas.index, pegawai.index, dll.
+|--------------------------------------------------------------------------
 */
 
-Route::prefix('v1')->group(function () {
-    // Ringkasan Statistik Dashboard BMD
-    Route::get('/dashboard/stats', [DashboardApiController::class, 'index']);
-
-    // Master Data Perangkat Daerah (PD / OPD)
+Route::prefix('v1')->name('api.v1.')->group(function () {
+    Route::get('/dashboard/stats', [DashboardApiController::class, 'index'])->name('dashboard.stats');
     Route::apiResource('perangkat-daerah', PerangkatDaerahApiController::class);
-
-    // Data Pegawai Negeri Sipil (PNS)
     Route::apiResource('pegawai', PegawaiApiController::class);
-
-    // Data Kendaraan Dinas Operasional (KDO)
     Route::apiResource('kendaraan-dinas', KendaraanDinasApiController::class);
 });
 
-// Alias default tanpa v1 untuk kemudahan pengujian
-Route::get('/dashboard/stats', [DashboardApiController::class, 'index']);
-Route::apiResource('perangkat-daerah', PerangkatDaerahApiController::class);
-Route::apiResource('pegawai', PegawaiApiController::class);
-Route::apiResource('kendaraan-dinas', KendaraanDinasApiController::class);
+// Alias default /api/... dengan prefix nama 'api.'
+Route::name('api.')->group(function () {
+    Route::get('/dashboard/stats', [DashboardApiController::class, 'index'])->name('dashboard.stats');
+    Route::apiResource('perangkat-daerah', PerangkatDaerahApiController::class);
+    Route::apiResource('pegawai', PegawaiApiController::class);
+    Route::apiResource('kendaraan-dinas', KendaraanDinasApiController::class);
+});

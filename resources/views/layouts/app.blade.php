@@ -271,6 +271,9 @@
         }
     </script>
 
+    <!-- Global Reusable Delete Confirmation Modal -->
+    @include('components.delete-modal')
+
     @stack('scripts')
 </body>
 </html>
