@@ -32,35 +32,45 @@
         <form method="GET" action="{{ route('kendaraan-dinas.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             <!-- Search -->
             <div class="lg:col-span-2">
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Pencarian</label>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Pencarian Cepat</label>
                 <div class="relative">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari no polisi, merek, tipe, atau nama PNS..." class="w-full text-xs rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 py-2.5 pl-9 pr-3">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari no polisi, merek, tipe, atau nama PNS..." class="form-control-smooth w-full text-xs rounded-xl border border-slate-200 py-2.5 pl-9 pr-3 text-slate-800 placeholder:text-slate-400">
                     <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
             </div>
 
             <!-- Filter Kondisi -->
             <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Kondisi Fisik</label>
-                <select name="kondisi" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 py-2.5 px-3">
-                    <option value="">-- Semua Kondisi --</option>
-                    <option value="Baik" {{ request('kondisi') === 'Baik' ? 'selected' : '' }}>Baik</option>
-                    <option value="Rusak Ringan" {{ request('kondisi') === 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
-                    <option value="Rusak Berat" {{ request('kondisi') === 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat</option>
-                </select>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Kondisi Fisik</label>
+                <div class="relative">
+                    <select name="kondisi" class="form-control-smooth appearance-none w-full text-xs font-medium rounded-xl border border-slate-200 py-2.5 pl-3.5 pr-11 text-slate-800 bg-white cursor-pointer">
+                        <option value="">-- Semua Kondisi --</option>
+                        <option value="Baik" {{ request('kondisi') === 'Baik' ? 'selected' : '' }}>Baik</option>
+                        <option value="Rusak Ringan" {{ request('kondisi') === 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
+                        <option value="Rusak Berat" {{ request('kondisi') === 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                </div>
             </div>
 
             <!-- Filter Perangkat Daerah -->
             <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Perangkat Daerah</label>
-                <select name="perangkat_daerah_id" class="w-full text-xs rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 py-2.5 px-3">
-                    <option value="">-- Semua Dinas/OPD --</option>
-                    @foreach($perangkatDaerahs as $pd)
-                        <option value="{{ $pd->id }}" {{ request('perangkat_daerah_id') == $pd->id ? 'selected' : '' }}>
-                            {{ $pd->singkatan ?? $pd->nama_instansi }}
-                        </option>
-                    @endforeach
-                </select>
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Perangkat Daerah</label>
+                <div class="relative">
+                    <select name="perangkat_daerah_id" class="form-control-smooth appearance-none w-full text-xs font-medium rounded-xl border border-slate-200 py-2.5 pl-3.5 pr-11 text-slate-800 bg-white cursor-pointer">
+                        <option value="">-- Semua Dinas/OPD --</option>
+                        @foreach($perangkatDaerahs as $pd)
+                            <option value="{{ $pd->id }}" {{ request('perangkat_daerah_id') == $pd->id ? 'selected' : '' }}>
+                                {{ $pd->singkatan ?? $pd->nama_instansi }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </div>
+                </div>
             </div>
 
             <!-- Buttons -->
