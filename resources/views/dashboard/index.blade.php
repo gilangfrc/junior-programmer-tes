@@ -55,8 +55,8 @@
                 </div>
             </div>
             <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                <span class="text-slate-500">Status Kelayakan:</span>
-                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 font-bold">Prima</span>
+                <span class="text-slate-500">Status:</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold whitespace-nowrap">Prima (Siap Operasi)</span>
             </div>
         </div>
 
@@ -74,7 +74,7 @@
             </div>
             <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                 <span class="text-slate-500">Tindakan:</span>
-                <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">Jadwalkan Bengkel</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-[11px] font-bold whitespace-nowrap">Jadwalkan Servis</span>
             </div>
         </div>
 
@@ -92,7 +92,7 @@
             </div>
             <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
                 <span class="text-slate-500">Tindakan:</span>
-                <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-800 font-bold">Ajukan Peremajaan / Lelang</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[11px] font-bold whitespace-nowrap">Peremajaan / Lelang</span>
             </div>
         </div>
     </div>
@@ -137,65 +137,81 @@
             <div class="overflow-x-auto flex-grow">
                 <table class="w-full text-left text-sm table-fixed">
                     <colgroup>
-                        <col class="w-[36%]">
-                        <col class="w-[20%]">
-                        <col class="w-[22%]">
-                        <col class="w-28">
-                        <col class="w-16">
+                        <col class="w-[33%]">
+                        <col class="w-[26%]">
+                        <col class="w-[24%]">
+                        <col class="w-32">
+                        <col class="w-20">
                     </colgroup>
-                    <thead class="bg-slate-50/75 text-slate-500 text-xs uppercase font-semibold border-b border-slate-100">
+                    <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-semibold border-b border-slate-200">
                         <tr>
-                            <th class="px-3.5 py-3 whitespace-nowrap">Plat & Kendaraan</th>
-                            <th class="px-3 py-3 whitespace-nowrap">Perangkat Daerah</th>
-                            <th class="px-3 py-3 whitespace-nowrap">Penanggung Jawab</th>
+                            <th class="px-3.5 py-3 whitespace-nowrap">No. Polisi & Spesifikasi</th>
+                            <th class="px-3.5 py-3 whitespace-nowrap">Perangkat Daerah</th>
+                            <th class="px-3.5 py-3 whitespace-nowrap">PNS Penanggung Jawab</th>
                             <th class="px-2 py-3 text-center whitespace-nowrap">Kondisi</th>
-                            <th class="px-3 py-3 text-right whitespace-nowrap">Aksi</th>
+                            <th class="px-3 py-3 text-center whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
                         @forelse($kdoTerbaru as $kdo)
-                        <tr class="hover:bg-slate-50/60 transition-colors">
+                        <tr class="hover:bg-slate-50/70 transition-colors">
                             <td class="px-3.5 py-3">
                                 <div class="flex items-center space-x-2.5 min-w-0">
                                     <span class="px-2 py-0.5 rounded font-mono font-bold text-xs bg-red-100 text-red-800 border border-red-200 shadow-sm whitespace-nowrap shrink-0">
                                         {{ $kdo->no_polisi }}
                                     </span>
                                     <div class="min-w-0 flex-1">
-                                        <div class="font-bold text-slate-900 text-xs truncate" title="{{ $kdo->merek }} {{ $kdo->tipe }}">{{ $kdo->merek }} {{ $kdo->tipe }}</div>
-                                        <div class="text-[11px] text-slate-400 truncate">Thn {{ $kdo->tahun_produksi }} &bull; {{ $kdo->jenis_kendaraan }}</div>
+                                        <a href="{{ route('kendaraan-dinas.show', $kdo) }}" class="font-bold text-slate-900 text-xs hover:text-blue-600 transition-colors block truncate" title="{{ $kdo->merek }} {{ $kdo->tipe }}">
+                                            {{ $kdo->merek }} {{ $kdo->tipe }}
+                                        </a>
+                                        <div class="text-[11px] text-slate-400 truncate" title="{{ $kdo->jenis_kendaraan }}">
+                                            {{ $kdo->jenis_kendaraan }}
+                                        </div>
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-3 py-3 text-xs">
-                                <span class="font-medium text-slate-800 block truncate" title="{{ $kdo->perangkatDaerah->nama_instansi }}">{{ $kdo->perangkatDaerah->singkatan ?? $kdo->perangkatDaerah->nama_instansi }}</span>
+                            <td class="px-3.5 py-3 text-xs">
+                                <span class="font-semibold text-slate-800 block truncate" title="{{ $kdo->perangkatDaerah->nama_instansi }}">
+                                    {{ $kdo->perangkatDaerah->nama_instansi }}
+                                </span>
+                                <div class="text-[11px] text-slate-400 truncate" title="Kode OPD: {{ $kdo->perangkatDaerah->kode_opd }}">
+                                    Kode: {{ $kdo->perangkatDaerah->kode_opd }}
+                                </div>
                             </td>
-                            <td class="px-3 py-3 text-xs">
+                            <td class="px-3.5 py-3 text-xs">
                                 @if($kdo->penanggungJawab)
                                     <div class="font-medium text-slate-800 truncate" title="{{ $kdo->penanggungJawab->nama }}">{{ $kdo->penanggungJawab->nama }}</div>
-                                    <div class="text-[10px] text-slate-400 font-mono truncate">NIP: {{ $kdo->penanggungJawab->nip }}</div>
+                                    <div class="text-[11px] text-slate-400 font-mono truncate" title="NIP: {{ $kdo->penanggungJawab->nip }}">NIP: {{ $kdo->penanggungJawab->nip }}</div>
+                                    <div class="text-[10px] text-slate-500 truncate" title="{{ $kdo->penanggungJawab->jabatan }}">{{ $kdo->penanggungJawab->jabatan }}</div>
                                 @else
-                                    <span class="inline-flex items-center text-[11px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-md font-medium border border-amber-200 whitespace-nowrap">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200 whitespace-nowrap" title="Kendaraan operasional belum memiliki pemegang tetap">
                                         Belum ditugaskan
                                     </span>
                                 @endif
                             </td>
                             <td class="px-2 py-3 text-xs text-center whitespace-nowrap">
                                 @if($kdo->kondisi === 'Baik')
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 whitespace-nowrap">
-                                        Baik
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap" title="Kondisi: Baik (Siap Operasional)">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                                        <span>Baik</span>
                                     </span>
                                 @elseif($kdo->kondisi === 'Rusak Ringan')
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-100 text-amber-800 whitespace-nowrap">
-                                        Rusak Ringan
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap" title="Kondisi: Rusak Ringan (Perlu Servis Rutin)">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+                                        <span>Rusak Ringan</span>
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-100 text-rose-800 whitespace-nowrap">
-                                        Rusak Berat
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap" title="Kondisi: Rusak Berat (Tidak Dapat Beroperasi)">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"></span>
+                                        <span>Rusak Berat</span>
                                     </span>
                                 @endif
                             </td>
-                            <td class="px-3 py-3 text-right text-xs whitespace-nowrap">
-                                <a href="{{ route('kendaraan-dinas.show', $kdo) }}" class="text-blue-600 hover:text-blue-800 font-semibold">Detail</a>
+                            <td class="px-3 py-3 text-center text-xs whitespace-nowrap">
+                                <a href="{{ route('kendaraan-dinas.show', $kdo) }}" class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-blue-600 hover:text-blue-700 hover:bg-blue-50 transition-colors" title="Lihat Detail (KIB)">
+                                    <span>Detail</span>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                                </a>
                             </td>
                         </tr>
                         @empty
