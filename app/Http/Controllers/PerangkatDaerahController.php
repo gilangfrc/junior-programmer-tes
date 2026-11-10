@@ -66,10 +66,10 @@ class PerangkatDaerahController extends Controller
 
     public function destroy(PerangkatDaerah $perangkatDaerah): RedirectResponse
     {
-        // Validasi dependensi jika masih memiliki kendaraan
-        if ($perangkatDaerah->kendaraanDinas()->count() > 0) {
+        // Validasi dependensi jika masih memiliki kendaraan atau pegawai aktif
+        if ($perangkatDaerah->kendaraanDinas()->count() > 0 || $perangkatDaerah->pegawais()->count() > 0) {
             return redirect()->route('perangkat-daerah.index')
-                ->with('error', 'Gagal menghapus! Instansi ini masih memiliki data Kendaraan Dinas tercatat.');
+                ->with('error', 'Gagal menghapus! Instansi ini masih memiliki data Kendaraan Dinas atau Pegawai tercatat.');
         }
 
         $perangkatDaerah->delete();

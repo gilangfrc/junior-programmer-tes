@@ -115,5 +115,11 @@ class PegawaiAndPerangkatDaerahTest extends TestCase
 
         // Berita Acara Serah Terima (BAST)
         $this->get("/kendaraan-dinas/{$kdo->id}/bast")->assertStatus(200)->assertSee('BERITA ACARA SERAH TERIMA');
+
+        // Proteksi hapus OPD via API jika masih punya aset KDO (409 Conflict)
+        $this->deleteJson("/api/v1/perangkat-daerah/{$opd->id}")
+            ->assertStatus(409)
+            ->assertJsonPath('success', false);
+        $this->assertDatabaseHas('perangkat_daerahs', ['id' => $opd->id]);
     }
 }

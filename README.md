@@ -1,163 +1,129 @@
 # SIM-KDO (Sistem Informasi Manajemen Kendaraan Dinas Operasional)
 ### Pengelolaan Barang Milik Daerah (BMD) Pemerintah Daerah
-**Ujian Praktik Junior Programmer (Kode Soal: JP-1)**  
-**Kategori Pengerjaan:** **Full Stack (Frontend UI + Backend REST API Terintegrasi)**
+
+**Ujian Praktik Junior Programmer (Kode Soal: `JP-1` / `JP-3`)**  
+**Kategori Pengerjaan:** **Full Stack (Frontend UI + Backend REST API Terintegrasi)**  
+**Status Penggunaan AI:** Menggunakan bantuan AI coding assistant secara transparan (didokumentasikan lengkap pada [`agents.md`](agents.md)).
 
 ---
 
-## 📌 1. Latar Belakang & Deskripsi Proyek
+## 1. Latar Belakang & Deskripsi Proyek
 
-Aplikasi **SIM-KDO** dibangun untuk menjawab kebutuhan tata kelola **Barang Milik Daerah (BMD)**, khususnya dalam pendataan, pengawasan fisik, dan penelusuran akuntabilitas pemegang **Kendaraan Dinas Operasional (KDO)** milik satuan kerja Pemerintah Daerah.
+Aplikasi **SIM-KDO** dibangun untuk menjawab kebutuhan tata kelola **Barang Milik Daerah (BMD)**, khususnya dalam pendataan, pengawasan kondisi fisik, dan penelusuran akuntabilitas pemegang **Kendaraan Dinas Operasional (KDO)** milik satuan kerja Perangkat Daerah.
 
 Sistem ini mengintegrasikan:
-1. **Frontend Modern (Tailwind CSS):** Dashboard eksekutif, tabel data interaktif dengan pencarian dan filter cepat, modal konfirmasi aksi, format cetak laporan resmi BMD, dan form input validatif.
-2. **Backend Kuat & Terstruktur (Laravel 11 & MySQL):** RESTful API lengkap (CRUD) dengan standar response JSON, Form Request Validation, Eloquent Model Relations, dan database migration terurut.
-3. **Interactive API Explorer (`/api-docs`):** Halaman pengujian langsung endpoint API di browser untuk memudahkan penilai/penguji memverifikasi status kode HTTP (`200 OK`, `201 Created`, dll).
+1. **Frontend Modern (Blade + Tailwind CSS v4):** Fixed sidebar layout, dashboard eksekutif KPI, tabel *enterprise* responsif (*fit-width* tanpa horizontal scroll dengan truncation & tooltip), filter multi-kriteria, modal konfirmasi hapus reusable, format cetak laporan resmi BMD & BAST, serta form input tervalidasi.
+2. **Backend Terstruktur (Laravel 11 & MySQL):** RESTful API CRUD penuh (Create, Read, Update, Delete) dengan standar respon JSON konsisten, `FormRequest` validation, Eloquent API Resources, integritas relasi RDBMS (*Foreign Key*), dan database migration terurut.
+3. **Interactive API Explorer (`/api-docs`):** Halaman pengujian langsung **20 endpoint REST API** di browser dengan tab kategori, trigger otomatis *Audit Trail*, pengukur latency, modal konfirmasi `DELETE`, serta generator `cURL`.
 
 ---
 
-## 🏛️ 2. Entitas Utama & Struktur Basis Data
+## 2. Entitas Utama & Struktur Basis Data (RDBMS)
 
-Sistem mengelola 3 entitas wajib sesuai instruksi soal serta 1 entitas riwayat pemeliharaan sebagai nilai tambah:
+Sistem mengelola **3 entitas wajib** sesuai instruksi soal serta **1 entitas relasional Audit Trail** sebagai nilai tambah:
 
-### A. Perangkat Daerah (PD / OPD) — Entitas 3
+### A. Perangkat Daerah (`perangkat_daerahs`) — Entitas 3
 Instansi pemerintah daerah yang memiliki dan mengalokasikan armada kendaraan dinas.
-* `id` : Primary Key
-* `kode_opd` : Kode unik satuan kerja (contoh: `1.01.01`)
-* `nama_instansi` : Nama dinas (contoh: *Dinas Pendidikan*, *Dinas Kesehatan*, *Dinas PUPR*)
-* `singkatan` : Akronim instansi (contoh: *Disdik*, *Dinkes*, *PUPR*)
-* `alamat` & `telepon` : Lokasi kantor dan kontak
-* `nama_kepala` & `nip_kepala` : Pimpinan/Kepala Dinas penandatangan BAST
+* `id` (PK)
+* `kode_opd`: Kode unik satuan kerja (contoh: `1.01.01`)
+* `nama_instansi`: Nama resmi OPD (contoh: *Dinas Pendidikan*, *Dinas Kesehatan*, *Dinas PUPR*, *BPKAD*, *Dishub*)
+* `singkatan`: Akronim instansi
+* `alamat` & `telepon`: Lokasi kantor dan kontak
+* `nama_kepala` & `nip_kepala`: Pimpinan OPD penandatangan BAST
 
-### B. Pegawai Negeri Sipil (PNS) — Entitas 2
-Aparatur Sipil Negara yang bertanggung jawab atas pengoperasian dan perawatan kendaraan.
-* `id` : Primary Key
-* `perangkat_daerah_id` : Relasi ke Perangkat Daerah bertugas (Foreign Key)
-* `nip` : Nomor Induk Pegawai (18 digit unik)
-* `nama` : Nama lengkap beserta gelar
-* `jabatan` : Jabatan struktural / fungsional
-* `golongan` : Pangkat/Golongan ruang (contoh: `IV/a (Pembina)`, `III/c (Penata)`)
-* `no_hp` & `email` : Kontak pegawai
-* `status_aktif` : Status keaktifan pegawai
+### B. Pegawai Negeri Sipil (`pegawais`) — Entitas 2
+Aparatur Sipil Negara penanggung jawab kendaraan dinas.
+* `id` (PK)
+* `perangkat_daerah_id` (FK &rarr; `perangkat_daerahs.id`, `ON DELETE CASCADE`)
+* `nip`: Nomor Induk Pegawai (18 digit, unik)
+* `nama`, `jabatan`, `golongan` (contoh: `IV/a (Pembina)`, `III/c (Penata)`)
+* `no_hp`, `email`, `status_aktif`
 
-### C. Kendaraan Dinas Operasional (KDO) — Entitas 1
+### C. Kendaraan Dinas Operasional (`kendaraan_dinas`) — Entitas 1
 Unit kendaraan bermotor dinas (plat merah) milik pemerintah daerah.
-* `id` : Primary Key
-* `perangkat_daerah_id` : Instansi pemilik aset (Foreign Key)
-* `penanggung_jawab_id` : PNS penanggung jawab / pemegang kendaraan (Foreign Key, nullable)
-* `no_polisi` : Nomor registrasi polisi plat merah (contoh: `B 1001 PQ`)
-* `merek` : Pabrikan kendaraan (contoh: *Toyota*, *Honda*, *Mitsubishi*, *Isuzu*)
-* `tipe` : Model/varian (contoh: *Kijang Innova 2.0 V*, *Hilux Double Cabin*, *Vario 160*)
-* `jenis_kendaraan` : Klasifikasi (`Roda 2`, `Roda 4`, `Roda 6 / Truk / Bus`)
-* `tahun_produksi` : Tahun pembuatan kendaraan
-* `warna` : Warna fisik unit
-* `kondisi` : Status kelayakan fisik (`Baik`, `Rusak Ringan`, `Rusak Berat`)
-* `nomor_rangka` & `nomor_mesin` : Identifikasi fisik kendaraan
-* `tgl_pajak` : Tanggal jatuh tempo pajak STNK
-* `keterangan` : Catatan peruntukan dinas
+* `id` (PK)
+* `perangkat_daerah_id` (FK &rarr; `perangkat_daerahs.id`, `ON DELETE CASCADE`)
+* `penanggung_jawab_id` (FK &rarr; `pegawais.id`, `ON DELETE SET NULL`, nullable untuk status *Pool Dinas*)
+* `no_polisi`: Nomor registrasi plat merah unik (contoh: `B 1001 PQ`)
+* `merek`, `tipe`, `jenis_kendaraan` (`Roda 2`, `Roda 4`, `Roda 6 / Truk / Bus`)
+* `tahun_produksi`, `warna`, `kondisi` (`Baik`, `Rusak Ringan`, `Rusak Berat`)
+* `nomor_rangka`, `nomor_mesin`, `tgl_pajak`, `keterangan`, `foto_path`
 
-### D. Riwayat Kondisi & Catatan Servis (Nilai Tambah / Inovasi)
-Log audit trail perubahan kondisi fisik unit dan estimasi biaya perbaikan.
-* `kendaraan_dinas_id` : Relasi unit KDO
-* `tanggal_pemeriksaan` : Tanggal pengecekan berkala
-* `kondisi_sebelum` & `kondisi_sesudah` : Perubahan status
-* `catatan_kerusakan` : Diagnosa teknis atau kebutuhan suku cadang
-* `petugas_pemeriksa` & `estimasi_biaya`
+### D. Riwayat Kondisi & Catatan Servis (`riwayat_kondisis`) — Nilai Tambah / Audit Trail BMD
+Log historis otomatis perubahan kondisi fisik unit KDO dan estimasi biaya perbaikan.
+* `id` (PK)
+* `kendaraan_dinas_id` (FK &rarr; `kendaraan_dinas.id`, `ON DELETE CASCADE`)
+* `tanggal_pemeriksaan`, `kondisi_sebelum`, `kondisi_sesudah`
+* `catatan_kerusakan`, `petugas_pemeriksa`, `estimasi_biaya`
 
 ---
 
-## 🗄️ 3. Diagram Relasi Entitas (ERD)
+## 3. Diagram Relasi Entitas (ERD)
 
 ```text
 [PERANGKAT DAERAH] 1 ────────────< N [PEGAWAI PNS]
        │                                   │
        │ 1                                 │ 1
-       │                                   │
-       v N                                 v N (nullable)
+       │                                   │ (ON DELETE SET NULL)
+       v N (ON DELETE CASCADE)             v N (nullable)
 [KENDARAAN DINAS (KDO)] <──────────────────┘
        │ 1
        │
-       v N
-[RIWAYAT KONDISI]
+       v N (ON DELETE CASCADE)
+[RIWAYAT KONDISI (AUDIT TRAIL)]
 ```
 
 ---
 
-## ✨ 4. Fitur-Fitur Aplikasi
+## 4. Fitur-Fitur Aplikasi
 
-### Fitur Wajib (Core CRUD):
-* **Read (Menampilkan Data):**
-  * Daftar tabel data lengkap dengan pagination, status pill, dan informasi relasi.
-  * Halaman detail komprehensif untuk KDO, Pegawai, dan Perangkat Daerah.
-* **Create (Menambah Data):**
-  * Form input lengkap dengan validasi (*server-side* & *client-side*).
-  * Dropdown dinamis berelasi (pilih OPD dan pilih PNS pemegang).
-* **Update (Mengubah Data):**
-  * Perbarui spesifikasi teknis, mutasi pemegang kendaraan, atau ubah status kondisi.
-  * Otomatis mencatat perubahan status ke tabel riwayat pemeliharaan.
-* **Delete (Menghapus Data):**
-  * Modal konfirmasi aksi hapus untuk mencegah kehilangan data tidak sengaja.
-  * *Foreign key constraint protection* (mencegah penghapusan instansi jika masih memiliki aset KDO aktif).
+### Fitur Wajib (Core CRUD — 3 Entitas):
+* **Read:** Daftar tabel rapi *enterprise-grade*, pagination, pencarian real-time, serta halaman detail (*KIB KDO*, *Profil PNS*, dan *Profil OPD*).
+* **Create:** Form terstruktur bernomor urut langkah, custom searchable dropdown PNS, custom file upload preview, validasi server-side & client-side plat nomor.
+* **Update:** Pembaruan spesifikasi, mutasi pemegang, dan pembaruan kondisi yang otomatis mencatat histori ke `riwayat_kondisis`.
+* **Delete:** Komponen modal konfirmasi hapus yang konsisten dan aman di seluruh halaman (`components/delete-modal.blade.php`).
 
-### Fitur Nilai Tambah & Inovasi (Poin Tambahan Ujian):
-1. **Executive Dashboard BMD:**
-   * 4 Kartu KPI: Total Armada, Total Unit Kondisi Baik, Rusak Ringan, dan Rusak Berat.
-   * Progress bar visual rasio kelayakan kendaraan operasional.
-   * Tabel rekapitulasi jumlah armada dan unit rusak per dinas.
-2. **Filter & Pencarian Multi-Kriteria:**
-   * Pencarian langsung berdasarkan Nomor Polisi, Merek, Tipe, atau Nama PNS.
-   * Filter cepat berdasarkan kondisi fisik (`Baik`, `Rusak Ringan`, `Rusak Berat`).
-   * Filter berdasarkan instansi Perangkat Daerah.
-3. **Cetak Rekapitulasi Inventaris BMD:**
-   * Halaman cetak laporan resmi lengkap dengan Kop Surat Pemda, rekap armada, dan kolom tanda tangan Pejabat Pengelola BMD.
-4. **Cetak Berita Acara Serah Terima (BAST):**
-   * Template surat resmi penyerahan kendaraan dari Kepala Perangkat Daerah kepada PNS penerima hak pakai.
-5. **Interactive REST API Tester Page (`/api-docs`):**
-   * Halaman uji API bawaan di web dengan tombol eksekusi live, latency counter, dan status code indicator.
+### Fitur Nilai Tambah & Inovasi:
+1. **Executive Dashboard BMD:** 4 Kartu KPI (Total Armada, Baik, Rusak Ringan, Rusak Berat), visual rasio kelayakan operasional, dan rekapitulasi aset per OPD.
+2. **Audit Trail BMD Otomatis:** Perekaman historis otomatis di tabel `riwayat_kondisis` setiap pencatatan awal (`store`) maupun perubahan kondisi fisik (`update`) baik lewat Web maupun REST API.
+3. **Filter & Pencarian Multi-Kriteria:** Pencarian instan no polisi/merek/nama PNS, filter kondisi, jenis kendaraan, status pemegang (Aktif dipegang vs Pool Dinas), dan filter OPD.
+4. **Cetak Rekapitulasi BMD & BAST:** Template cetak surat resmi lengkap dengan kop instansi dan kolom tanda tangan.
+5. **Interactive REST API Tester (`/api-docs`):** Pengujian 20 endpoint API lengkap secara live beserta generator `cURL`.
 
 ---
 
-## 🚀 5. Dokumentasi REST API
+## 5. Dokumentasi REST API
 
-Semua endpoint API mengembalikan format JSON standar:
-```json
-{
-  "success": true,
-  "message": "Pesan deskriptif",
-  "data": { ... }
-}
-```
-
-### Daftar Endpoint:
+Seluruh endpoint tersedia di prefix `/api/...` dan `/api/v1/...`, mengembalikan format JSON standar (`success`, `message`, `data`) termasuk penanganan validasi `422` dan `404` JSON (dikonfigurasi di `bootstrap/app.php`).
 
 | Method | Endpoint | Deskripsi | Status Code |
 | :--- | :--- | :--- | :--- |
-| `GET` | `/api/dashboard/stats` | Ringkasan statistik eksekutif KDO | `200 OK` |
-| `GET` | `/api/kendaraan-dinas` | Daftar seluruh KDO (mendukung query `search`, `kondisi`, `perangkat_daerah_id`) | `200 OK` |
-| `POST` | `/api/kendaraan-dinas` | Tambah unit kendaraan dinas baru | `201 Created` |
-| `GET` | `/api/kendaraan-dinas/{id}` | Detail 1 unit KDO beserta relasi & riwayat | `200 OK` / `404 Not Found` |
-| `PUT` | `/api/kendaraan-dinas/{id}` | Ubah data kendaraan dinas | `200 OK` |
-| `DELETE` | `/api/kendaraan-dinas/{id}` | Hapus data kendaraan dinas | `200 OK` |
-| `GET` | `/api/pegawai` | Daftar pegawai PNS | `200 OK` |
-| `POST` | `/api/pegawai` | Tambah pegawai PNS baru | `201 Created` |
-| `GET` | `/api/pegawai/{id}` | Detail profil pegawai & KDO yang dipegang | `200 OK` |
-| `PUT` | `/api/pegawai/{id}` | Ubah data pegawai | `200 OK` |
-| `DELETE` | `/api/pegawai/{id}` | Hapus data pegawai | `200 OK` |
-| `GET` | `/api/perangkat-daerah` | Daftar Perangkat Daerah (OPD) | `200 OK` |
-| `POST` | `/api/perangkat-daerah` | Tambah Perangkat Daerah | `201 Created` |
-| `GET` | `/api/perangkat-daerah/{id}` | Detail instansi beserta daftar aset & pegawai | `200 OK` |
-| `PUT` | `/api/perangkat-daerah/{id}` | Ubah data instansi | `200 OK` |
-| `DELETE` | `/api/perangkat-daerah/{id}` | Hapus data instansi | `200 OK` |
+| `GET` | `/api/dashboard/stats` | Ringkasan statistik eksekutif & rasio kelayakan armada | `200 OK` |
+| `GET` | `/api/kendaraan-dinas` | Daftar KDO paginated (filter: `search`, `kondisi`, `perangkat_daerah_id`, `jenis_kendaraan`) | `200 OK` |
+| `POST` | `/api/kendaraan-dinas` | Tambah KDO baru (otomatis catat audit trail awal) | `201 Created` |
+| `GET` | `/api/kendaraan-dinas/{id}` | Detail KDO lengkap dengan relasi OPD, PNS, & riwayat kondisi | `200 OK` / `404` |
+| `PUT` | `/api/kendaraan-dinas/{id}` | Update data & kondisi KDO (otomatis catat audit trail jika kondisi berubah) | `200 OK` / `422` |
+| `DELETE` | `/api/kendaraan-dinas/{id}` | Hapus KDO beserta file foto di storage | `200 OK` / `404` |
+| `GET` | `/api/pegawai` | Daftar PNS penanggung jawab (filter: `search`, `perangkat_daerah_id`) | `200 OK` |
+| `POST` | `/api/pegawai` | Tambah PNS baru dengan validasi NIP unik | `201 Created` |
+| `GET` | `/api/pegawai/{id}` | Detail profil PNS & unit KDO yang dipertanggungjawabkan | `200 OK` / `404` |
+| `PUT` | `/api/pegawai/{id}` | Perbarui data PNS | `200 OK` |
+| `DELETE` | `/api/pegawai/{id}` | Hapus PNS (unit KDO terkait otomatis menjadi Pool Dinas) | `200 OK` |
+| `GET` | `/api/perangkat-daerah` | Daftar OPD/SKPD beserta total pegawai & aset KDO | `200 OK` |
+| `POST` | `/api/perangkat-daerah` | Tambah instansi OPD baru | `201 Created` |
+| `GET` | `/api/perangkat-daerah/{id}` | Detail profil instansi OPD | `200 OK` / `404` |
+| `PUT` | `/api/perangkat-daerah/{id}` | Perbarui data instansi OPD | `200 OK` |
+| `DELETE` | `/api/perangkat-daerah/{id}` | Hapus instansi OPD | `200 OK` |
 
-#### Contoh Request cURL:
+### Contoh Pengujian cURL:
 ```bash
-# 1. Mengambil statistik dashboard
+# 1. Ambil statistik dashboard
 curl -X GET "http://127.0.0.1:8000/api/dashboard/stats" -H "Accept: application/json"
 
-# 2. Mengambil daftar kendaraan dalam kondisi Rusak Ringan
-curl -X GET "http://127.0.0.1:8000/api/kendaraan-dinas?kondisi=Rusak+Ringan" -H "Accept: application/json"
+# 2. Filter kendaraan kondisi Rusak Berat
+curl -X GET "http://127.0.0.1:8000/api/kendaraan-dinas?kondisi=Rusak+Berat" -H "Accept: application/json"
 
-# 3. Menambahkan kendaraan baru
+# 3. Tambah kendaraan baru via API
 curl -X POST "http://127.0.0.1:8000/api/kendaraan-dinas" \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
@@ -169,7 +135,7 @@ curl -X POST "http://127.0.0.1:8000/api/kendaraan-dinas" \
     "tipe": "Innova Zenix 2.0 V",
     "jenis_kendaraan": "Roda 4",
     "tahun_produksi": 2024,
-    "warna": "Hitam",
+    "warna": "Hitam Metalik",
     "kondisi": "Baik",
     "nomor_rangka": "MHF11MAG8P0019283",
     "nomor_mesin": "M20A-FKS-109283",
@@ -180,136 +146,145 @@ curl -X POST "http://127.0.0.1:8000/api/kendaraan-dinas" \
 
 ---
 
-## ⚙️ 6. Panduan Instalasi & Menjalankan Aplikasi
+## 6. Panduan Instalasi & Menjalankan Aplikasi (Manual Setup)
 
 ### Kebutuhan Sistem:
-* PHP >= 8.2 (ekstensi `pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`)
-* MySQL / MariaDB Server
+* PHP >= 8.2 (`pdo_mysql`, `mbstring`, `openssl`, `tokenizer`, `xml`, `ctype`, `json`)
+* MySQL >= 8.0 / MariaDB Server
 * Composer >= 2.x
-* Node.js & npm (untuk kompilasi Tailwind CSS)
+* Node.js & npm
 
 ### Langkah Instalasi:
 
-1. **Clone Repositori:**
+1. **Clone Repositori & Masuk Direktori:**
    ```bash
    git clone https://github.com/gilangfrc/junior-programmer-tes.git
    cd junior-programmer-tes
    ```
 
-2. **Instal Dependensi PHP & Node:**
+2. **Instal Dependensi & Generate App Key:**
    ```bash
    composer install
    npm install
+   cp .env.example .env
+   php artisan key:generate
    ```
 
-3. **Konfigurasi Environment Database (`.env`):**
-   Pastikan pengaturan database di `.env` telah sesuai:
+3. **Konfigurasi Database MySQL di `.env`:**
    ```env
    DB_CONNECTION=mysql
    DB_HOST=127.0.0.1
    DB_PORT=3306
-   DB_DATABASE=pusadatin_tes
+   DB_DATABASE=pusdatin_tes
    DB_USERNAME=root
    DB_PASSWORD=root
    ```
+   *(Pastikan database `pusdatin_tes` telah dibuat di MySQL server Anda: `CREATE DATABASE pusdatin_tes;`)*
 
-4. **Jalankan Migrasi & Database Seeder:**
-   ```bash
-   php artisan migrate --seed
-   ```
-   *Seeder akan otomatis mengisi data realistis: 5 instansi Perangkat Daerah (Dinas Pendidikan, Dinas Kesehatan, Dinas PUPR, BPKAD, Dishub), 9 Pegawai PNS, 12 unit Kendaraan Dinas plat merah dengan aneka kondisi, dan log riwayat pemeliharaan.*
+4. **Setup Skema & Data Awal (Pilih Salah Satu Cara):**
+   * **Cara A — Via Laravel Migration & Seeder (Direkomendasikan):**
+     ```bash
+     php artisan migrate --seed
+     ```
+   * **Cara B — Via Import Dump SQL (`database/dump_sim_kdo.sql`):**
+     ```bash
+     mysql -h 127.0.0.1 -u root -p pusdatin_tes < database/dump_sim_kdo.sql
+     ```
+   *Kedua cara di atas menghasilkan data riil operasional Pemda: 5 Perangkat Daerah, 9 PNS, 12 unit Kendaraan Dinas plat merah, dan riwayat audit trail pemeriksaan kondisi.*
 
-5. **Hubungkan Symlink Penyimpanan Media:**
+5. **Kompilasi Aset Frontend & Link Storage:**
    ```bash
    php artisan storage:link
-   ```
-
-6. **Kompilasi Aset Frontend (Tailwind CSS):**
-   ```bash
    npm run build
    ```
 
-7. **Jalankan Server Development:**
+6. **Jalankan Server & Pengujian:**
    ```bash
+   # Menjalankan server development
    php artisan serve
+
+   # Menjalankan automated test suite (12 feature tests)
+   php artisan test
    ```
-   Aplikasi dapat diakses melalui browser pada:
-   * **Dashboard Utama:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
-   * **Interactive API Tester:** [http://127.0.0.1:8000/api-docs](http://127.0.0.1:8000/api-docs)
+   Akses di browser:
+   * **Dashboard Utama:** `http://127.0.0.1:8000`
+   * **Interactive API Tester:** `http://127.0.0.1:8000/api-docs`
 
 ---
 
-## 📂 7. Struktur Direktori Utama
+## 7. Transparansi Penggunaan AI & Bukti Screenshot
+
+* **Dokumentasi Agen AI ([`agents.md`](agents.md)):** Berisi deklarasi jujur penggunaan asisten AI, pembagian kontrol *human-in-the-loop*, log iterasi pengembangan, serta standar teknis kode proyek.
+* **Dump Database SQL:** Tersimpan di [`database/dump_sim_kdo.sql`](database/dump_sim_kdo.sql).
+* **Dokumentasi Screenshot Aplikasi & Pengujian REST API:** Tersimpan di direktori [`docs/screenshots/`](docs/screenshots/).
+
+---
+
+## 8. Struktur Direktori Proyek
 
 ```text
 junior-programmer-tes/
+├── agents.md                                    # Dokumentasi transparansi AI (Wajib JP-3)
+├── README.md                                    # Dokumentasi teknis & manual setup
 ├── app/
 │   ├── Http/
 │   │   ├── Controllers/
-│   │   │   ├── Api/                     # REST API Controllers
+│   │   │   ├── Api/                             # REST API Controllers
 │   │   │   │   ├── DashboardApiController.php
 │   │   │   │   ├── KendaraanDinasApiController.php
 │   │   │   │   ├── PegawaiApiController.php
 │   │   │   │   └── PerangkatDaerahApiController.php
-│   │   │   ├── ApiDocsController.php    # Interactive API Tester Controller
-│   │   │   ├── DashboardController.php  # Web Dashboard Controller
+│   │   │   ├── ApiDocsController.php            # Interactive API Tester Controller
+│   │   │   ├── DashboardController.php          # Web Dashboard Controller
 │   │   │   ├── KendaraanDinasController.php
 │   │   │   ├── PegawaiController.php
 │   │   │   └── PerangkatDaerahController.php
-│   │   ├── Requests/                    # Form Request Validations
+│   │   ├── Requests/                            # Form Request Validation
 │   │   │   ├── StoreKendaraanDinasRequest.php
 │   │   │   ├── UpdateKendaraanDinasRequest.php
 │   │   │   ├── StorePegawaiRequest.php
 │   │   │   ├── UpdatePegawaiRequest.php
 │   │   │   ├── StorePerangkatDaerahRequest.php
 │   │   │   └── UpdatePerangkatDaerahRequest.php
-│   │   └── Resources/                   # API Json Resources
+│   │   └── Resources/                           # Eloquent API JSON Resources
 │   │       ├── KendaraanDinasResource.php
 │   │       ├── PegawaiResource.php
 │   │       └── PerangkatDaerahResource.php
-│   └── Models/                          # Eloquent Models & Relasi
+│   └── Models/                                  # Models & Eloquent Relations
 │       ├── KendaraanDinas.php
 │       ├── Pegawai.php
 │       ├── PerangkatDaerah.php
 │       └── RiwayatKondisi.php
 ├── database/
-│   ├── migrations/                      # 4 Migrasi Terstruktur Berurutan
+│   ├── dump_sim_kdo.sql                         # SQL Database Dump MySQL (Bonus RDBMS)
+│   ├── migrations/                              # Migrasi RDBMS terurut
 │   │   ├── 2026_01_01_000001_create_perangkat_daerahs_table.php
 │   │   ├── 2026_01_01_000002_create_pegawais_table.php
 │   │   ├── 2026_01_01_000003_create_kendaraan_dinas_table.php
 │   │   └── 2026_01_01_000004_create_riwayat_kondisis_table.php
 │   └── seeders/
-│       └── DatabaseSeeder.php           # Data Awal Aset BMD
+│       └── DatabaseSeeder.php
+├── docs/
+│   └── screenshots/                             # Tangkapan layar UI & bukti REST API
 ├── resources/
-│   ├── css/app.css                      # Tailwind CSS Setup
-│   └── views/                           # Blade Templates
-│       ├── layouts/app.blade.php
+│   ├── css/app.css                              # Tailwind CSS v4 config
+│   └── views/                                   # Blade Templates
+│       ├── components/delete-modal.blade.php    # Reusable Delete Confirmation Modal
+│       ├── layouts/app.blade.php                # Fixed Sidebar Layout
 │       ├── dashboard/index.blade.php
-│       ├── kendaraan_dinas/
-│       │   ├── index.blade.php
-│       │   ├── create.blade.php
-│       │   ├── edit.blade.php
-│       │   ├── show.blade.php
-│       │   ├── cetak.blade.php          # Print Rekap BMD
-│       │   └── bast.blade.php           # Berita Acara Serah Terima
-│       ├── pegawai/
-│       │   ├── index.blade.php
-│       │   ├── create.blade.php
-│       │   ├── edit.blade.php
-│       │   └── show.blade.php
-│       ├── perangkat_daerah/
-│       │   ├── index.blade.php
-│       │   ├── create.blade.php
-│       │   ├── edit.blade.php
-│       │   └── show.blade.php
-│       └── api_docs/
-│           └── index.blade.php          # Interactive Tester UI
-└── routes/
-    ├── web.php                          # Rute Antarmuka Web
-    └── api.php                          # Rute RESTful API
+│       ├── kendaraan_dinas/ (index, create, edit, show, cetak, bast)
+│       ├── pegawai/ (index, create, edit, show)
+│       ├── perangkat_daerah/ (index, create, edit, show)
+│       └── api_docs/index.blade.php             # Interactive REST API Tester
+├── routes/
+│   ├── web.php
+│   └── api.php
+└── tests/Feature/                               # Automated PHPUnit Test Suite
+    ├── KendaraanDinasTest.php
+    └── PegawaiAndPerangkatDaerahTest.php
 ```
 
 ---
 
-## ⚖️ 8. Lisensi & Hak Penggunaan
-Proyek ini dibuat sebagai penyelesaian **Ujian Praktik Junior Programmer (JP-1)** dalam rangka seleksi teknis pengelolaan sistem Barang Milik Daerah (BMD). Bersifat *open-source* di bawah lisensi MIT.
+## 9. Lisensi
+Proyek ini dibuat sebagai penyelesaian **Ujian Praktik Junior Programmer (JP-1)** pengelolaan Kendaraan Dinas Operasional (BMD). Bersifat *open-source* di bawah lisensi MIT.

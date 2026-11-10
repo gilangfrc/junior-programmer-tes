@@ -115,6 +115,13 @@ class PerangkatDaerahApiController extends Controller
             ], 404);
         }
 
+        if ($pd->kendaraanDinas()->count() > 0 || $pd->pegawais()->count() > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus! Instansi ini masih memiliki data Kendaraan Dinas atau Pegawai aktif.',
+            ], 409);
+        }
+
         $pd->delete();
 
         return response()->json([
