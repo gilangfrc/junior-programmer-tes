@@ -47,9 +47,9 @@
         <div class="overflow-x-auto">
             <table class="w-full text-left text-sm table-fixed">
                 <colgroup>
-                    <col class="w-28">
-                    <col class="w-[42%]">
-                    <col class="w-[28%]">
+                    <col class="w-40">
+                    <col>
+                    <col class="w-[24%]">
                     <col class="w-24">
                     <col class="w-24">
                     <col class="w-28">
