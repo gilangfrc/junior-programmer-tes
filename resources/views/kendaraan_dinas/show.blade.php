@@ -49,19 +49,19 @@
                     </h2>
 
                     @if($kendaraanDinas->kondisi === 'Baik')
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
-                            <span class="w-2 h-2 rounded-full bg-emerald-600 mr-2"></span>
-                            Kondisi Baik
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 whitespace-nowrap">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+                            <span>Kondisi Baik</span>
                         </span>
                     @elseif($kendaraanDinas->kondisi === 'Rusak Ringan')
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800">
-                            <span class="w-2 h-2 rounded-full bg-amber-600 mr-2"></span>
-                            Kondisi Rusak Ringan
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200 whitespace-nowrap">
+                            <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+                            <span>Kondisi Rusak Ringan</span>
                         </span>
                     @else
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800">
-                            <span class="w-2 h-2 rounded-full bg-rose-600 mr-2"></span>
-                            Kondisi Rusak Berat
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap">
+                            <span class="w-2 h-2 rounded-full bg-rose-500 shrink-0"></span>
+                            <span>Kondisi Rusak Berat</span>
                         </span>
                     @endif
                 </div>
