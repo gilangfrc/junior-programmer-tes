@@ -54,11 +54,11 @@
     <!-- Mobile Sidebar Backdrop -->
     <div id="sidebarBackdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-950/60 z-40 hidden lg:hidden transition-opacity duration-300 no-print"></div>
 
-    <!-- Sidebar Navigation (Desktop & Mobile Drawer) -->
-    <aside id="sidebar" class="fixed inset-y-0 left-0 z-50 w-64 bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 lg:static lg:min-h-screen no-print flex-shrink-0">
+    <!-- Sidebar Navigation (Fixed on Desktop, Drawer on Mobile) -->
+    <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 w-64 h-screen bg-slate-900 text-slate-300 flex flex-col border-r border-slate-800 transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 no-print flex-shrink-0">
         
         <!-- Sidebar Brand Header -->
-        <div class="h-16 px-5 border-b border-slate-800 flex items-center justify-between">
+        <div class="h-16 px-5 border-b border-slate-800 flex items-center justify-between flex-shrink-0">
             <a href="{{ route('dashboard') }}" class="flex items-center space-x-3 group">
                 <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform">
                     <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,7 +164,7 @@
         </div>
 
         <!-- Sidebar Footer Status -->
-        <div class="p-3.5 border-t border-slate-800 bg-slate-950/40">
+        <div class="p-3.5 border-t border-slate-800 bg-slate-950/40 flex-shrink-0">
             <div class="flex items-center space-x-2.5 px-2 py-1.5 rounded-lg bg-slate-800/40 text-[11px]">
                 <div class="w-2 h-2 rounded-full bg-emerald-400"></div>
                 <div class="text-slate-400 truncate">
@@ -174,34 +174,54 @@
         </div>
     </aside>
 
-    <!-- Main Content Area Wrapper -->
-    <div class="flex-1 flex flex-col min-w-0 min-h-screen">
+    <!-- Main Content Area Wrapper (Offset by Sidebar Width on Desktop) -->
+    <div class="lg:pl-64 flex-1 flex flex-col min-w-0 min-h-screen">
         
-        <!-- Sticky Top Bar on Main Area -->
-        <header class="h-16 bg-white/90 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-4 sm:px-6 lg:px-8 flex items-center justify-between no-print">
+        <!-- Sticky Top Bar (Info Umum Sistem, Tanggal & Operator BMD) -->
+        <header class="h-16 bg-white/95 backdrop-blur-md border-b border-slate-200/80 sticky top-0 z-30 px-4 sm:px-6 lg:px-8 flex items-center justify-between no-print">
             <div class="flex items-center space-x-3">
                 <!-- Hamburger Button for Mobile -->
-                <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 focus:outline-none">
+                <button onclick="toggleSidebar()" class="lg:hidden p-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 focus:outline-none transition-colors" aria-label="Toggle Menu">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
                 </button>
 
-                <div class="hidden sm:flex items-center space-x-2 text-xs text-slate-400">
-                    <span class="font-semibold text-slate-700">SIM-KDO</span>
-                    <span>&bull;</span>
-                    <span class="text-slate-500">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</span>
+                <!-- General System Info -->
+                <div class="flex items-center space-x-2.5">
+                    <div class="w-2.5 h-2.5 rounded-full bg-blue-600 ring-4 ring-blue-100"></div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-xs font-black tracking-tight text-slate-900">Sistem Pengelolaan KDO</span>
+                            <span class="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">BMD Pemda</span>
+                        </div>
+                        <p class="text-[11px] text-slate-400 hidden sm:block">Inventarisasi & Pengawasan Fisik Kendaraan Operasional</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Topbar Actions -->
+            <!-- Header Right: Info Umum (Tanggal, Status Database, Operator) -->
             <div class="flex items-center space-x-3">
-                <a href="{{ route('api-docs') }}" class="hidden sm:inline-flex items-center space-x-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition-colors">
-                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span>API Docs</span>
-                </a>
-                <a href="{{ route('kendaraan-dinas.create') }}" class="inline-flex items-center space-x-1.5 text-xs font-semibold px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white shadow-sm shadow-blue-500/25 transition-all">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                    <span>+ Tambah KDO</span>
-                </a>
+                <!-- Tanggal Hari Ini -->
+                <div class="hidden md:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs text-slate-600">
+                    <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                    <span class="font-medium">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</span>
+                </div>
+
+                <!-- Database Status Badge -->
+                <div class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-emerald-50/80 border border-emerald-200/80 text-xs">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-[11px] font-bold text-emerald-800">MySQL Online</span>
+                </div>
+
+                <!-- Operator Profile Badge -->
+                <div class="flex items-center space-x-2.5 pl-2 sm:border-l sm:border-slate-200">
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-slate-900 to-blue-900 text-white flex items-center justify-center font-black text-xs shadow-sm">
+                        AD
+                    </div>
+                    <div class="hidden sm:block text-left">
+                        <div class="text-xs font-bold text-slate-900 leading-tight">Admin BMD</div>
+                        <div class="text-[10px] text-slate-400 leading-tight font-medium">Pengurus Barang Pengelola</div>
+                    </div>
+                </div>
             </div>
         </header>
 

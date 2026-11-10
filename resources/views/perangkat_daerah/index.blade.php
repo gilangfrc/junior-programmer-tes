@@ -23,34 +23,40 @@
 
     <!-- Search Bar -->
     <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm">
-        <form method="GET" action="{{ route('perangkat-daerah.index') }}" class="flex flex-col sm:flex-row gap-3">
-            <div class="flex-grow relative">
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama instansi (Dinas Pendidikan, Kesehatan, PUPR) atau kode OPD..." class="w-full text-xs rounded-xl border-slate-200 bg-slate-50 focus:bg-white focus:border-blue-500 focus:ring-blue-500 py-2.5 pl-9 pr-3">
-                <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <form method="GET" action="{{ route('perangkat-daerah.index') }}" class="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            <div class="sm:col-span-2 lg:col-span-3">
+                <label class="block text-xs font-bold text-slate-700 mb-1.5">Pencarian Instansi / OPD</label>
+                <div class="relative">
+                    <input type="text" name="search" value="{{ request('search') }}" autocomplete="off" placeholder="Cari nama instansi (Dinas Pendidikan, Kesehatan, PUPR) atau kode OPD..." class="form-control-smooth w-full text-xs rounded-xl border border-slate-200 py-2.5 pl-9 pr-3 text-slate-800 placeholder:text-slate-400">
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                </div>
             </div>
-            <button type="submit" class="text-xs font-semibold px-5 py-2.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition-colors">
-                Cari
-            </button>
-            @if(request('search'))
-                <a href="{{ route('perangkat-daerah.index') }}" class="text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors flex items-center justify-center">
-                    Reset
-                </a>
-            @endif
+
+            <div class="flex items-end space-x-2">
+                <button type="submit" class="flex-1 text-xs font-semibold px-4 py-2.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition-colors">
+                    Filter Data
+                </button>
+                @if(request('search'))
+                    <a href="{{ route('perangkat-daerah.index') }}" class="text-xs px-3.5 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors flex items-center justify-center" title="Reset Pencarian">
+                        Reset
+                    </a>
+                @endif
+            </div>
         </form>
     </div>
 
     <!-- Table -->
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
+            <table class="w-full text-left text-sm min-w-[950px]">
                 <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-semibold border-b border-slate-200">
                     <tr>
-                        <th class="px-5 py-3.5">Kode & Singkatan</th>
-                        <th class="px-5 py-3.5">Nama Instansi Perangkat Daerah</th>
-                        <th class="px-5 py-3.5">Kepala Dinas / Pimpinan</th>
-                        <th class="px-5 py-3.5 text-center">Total KDO</th>
-                        <th class="px-5 py-3.5 text-center">Total Pegawai</th>
-                        <th class="px-5 py-3.5 text-center">Aksi</th>
+                        <th class="px-5 py-3.5 w-40 whitespace-nowrap">Kode & Singkatan</th>
+                        <th class="px-5 py-3.5 w-80 whitespace-nowrap">Nama Instansi Perangkat Daerah</th>
+                        <th class="px-5 py-3.5 w-60 whitespace-nowrap">Kepala Dinas / Pimpinan</th>
+                        <th class="px-5 py-3.5 w-32 text-center whitespace-nowrap">Total KDO</th>
+                        <th class="px-5 py-3.5 w-32 text-center whitespace-nowrap">Total Pegawai</th>
+                        <th class="px-5 py-3.5 w-28 text-center whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -65,10 +71,10 @@
                             @endif
                         </td>
                         <td class="px-5 py-4">
-                            <a href="{{ route('perangkat-daerah.show', $pd) }}" class="font-bold text-slate-900 text-xs hover:text-blue-600 transition-colors">
+                            <a href="{{ route('perangkat-daerah.show', $pd) }}" class="font-bold text-slate-900 text-xs hover:text-blue-600 transition-colors block">
                                 {{ $pd->nama_instansi }}
                             </a>
-                            <div class="text-[11px] text-slate-400 mt-0.5">{{ $pd->alamat ?? '-' }}</div>
+                            <div class="text-[11px] text-slate-400 mt-0.5 truncate max-w-sm">{{ $pd->alamat ?? '-' }}</div>
                         </td>
                         <td class="px-5 py-4 text-xs">
                             <div class="font-medium text-slate-800">{{ $pd->nama_kepala ?? '-' }}</div>
@@ -87,14 +93,14 @@
                             </a>
                         </td>
                         <td class="px-5 py-4 text-xs text-center">
-                            <div class="flex items-center justify-center space-x-1.5">
-                                <a href="{{ route('perangkat-daerah.show', $pd) }}" class="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Lihat Detail">
+                            <div class="flex items-center justify-center space-x-1">
+                                <a href="{{ route('perangkat-daerah.show', $pd) }}" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Lihat Detail">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 </a>
-                                <a href="{{ route('perangkat-daerah.edit', $pd) }}" class="p-1.5 rounded-lg text-slate-500 hover:text-amber-600 hover:bg-amber-50 transition-colors" title="Ubah Instansi">
+                                <a href="{{ route('perangkat-daerah.edit', $pd) }}" class="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors" title="Ubah Instansi">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                 </a>
-                                <button type="button" onclick="openDeleteModal('{{ route('perangkat-daerah.destroy', $pd) }}', 'Perangkat Daerah: {{ $pd->nama_instansi }} (Kode: {{ $pd->kode_opd }})', 'Penghapusan akan ditolak jika masih terdapat data Kendaraan Dinas tercatat di bawah instansi ini.')" class="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition-colors" title="Hapus Instansi">
+                                <button type="button" onclick="openDeleteModal('{{ route('perangkat-daerah.destroy', $pd) }}', 'Perangkat Daerah: {{ $pd->nama_instansi }} (Kode: {{ $pd->kode_opd }})', 'Penghapusan akan ditolak jika masih terdapat data Kendaraan Dinas tercatat di bawah instansi ini.')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors" title="Hapus Instansi">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                 </button>
                             </div>

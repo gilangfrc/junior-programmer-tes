@@ -34,7 +34,7 @@
             <div class="lg:col-span-2">
                 <label class="block text-xs font-bold text-slate-700 mb-1.5">Pencarian Cepat</label>
                 <div class="relative">
-                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari no polisi, merek, tipe, atau nama PNS..." class="form-control-smooth w-full text-xs rounded-xl border border-slate-200 py-2.5 pl-9 pr-3 text-slate-800 placeholder:text-slate-400">
+                    <input type="text" name="search" value="{{ request('search') }}" autocomplete="off" placeholder="Cari no polisi, merek, tipe, atau nama PNS..." class="form-control-smooth w-full text-xs rounded-xl border border-slate-200 py-2.5 pl-9 pr-3 text-slate-800 placeholder:text-slate-400">
                     <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                 </div>
             </div>
@@ -90,41 +90,41 @@
     <!-- Data Table -->
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-sm">
+            <table class="w-full text-left text-sm min-w-[1050px]">
                 <thead class="bg-slate-50 text-slate-500 text-xs uppercase font-semibold border-b border-slate-200">
                     <tr>
-                        <th class="px-5 py-3.5">No</th>
-                        <th class="px-5 py-3.5">No. Polisi & Spesifikasi</th>
-                        <th class="px-5 py-3.5">Perangkat Daerah</th>
-                        <th class="px-5 py-3.5">PNS Penanggung Jawab</th>
-                        <th class="px-5 py-3.5">Warna & Tahun</th>
-                        <th class="px-5 py-3.5">Kondisi</th>
-                        <th class="px-5 py-3.5 text-center">Aksi</th>
+                        <th class="px-5 py-3.5 w-14 text-center whitespace-nowrap">No</th>
+                        <th class="px-5 py-3.5 w-64 whitespace-nowrap">No. Polisi & Spesifikasi</th>
+                        <th class="px-5 py-3.5 w-56 whitespace-nowrap">Perangkat Daerah</th>
+                        <th class="px-5 py-3.5 w-60 whitespace-nowrap">PNS Penanggung Jawab</th>
+                        <th class="px-5 py-3.5 w-32 whitespace-nowrap">Warna & Tahun</th>
+                        <th class="px-5 py-3.5 w-36 text-center whitespace-nowrap">Kondisi</th>
+                        <th class="px-5 py-3.5 w-28 text-center whitespace-nowrap">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse($kendaraanDinas as $index => $kdo)
                     <tr class="hover:bg-slate-50/70 transition-colors">
-                        <td class="px-5 py-4 text-xs text-slate-400 font-mono">
+                        <td class="px-5 py-4 text-xs text-slate-400 font-mono text-center">
                             {{ $kendaraanDinas->firstItem() + $index }}
                         </td>
                         <td class="px-5 py-4">
                             <div class="flex items-center space-x-3">
-                                <span class="px-2.5 py-1 rounded font-mono font-bold text-xs bg-red-100 text-red-800 border border-red-200 shadow-sm whitespace-nowrap">
+                                <span class="px-2.5 py-1 rounded font-mono font-bold text-xs bg-red-100 text-red-800 border border-red-200 shadow-sm whitespace-nowrap flex-shrink-0">
                                     {{ $kdo->no_polisi }}
                                 </span>
-                                <div>
-                                    <a href="{{ route('kendaraan-dinas.show', $kdo) }}" class="font-bold text-slate-900 text-xs hover:text-blue-600 transition-colors">
+                                <div class="min-w-0">
+                                    <a href="{{ route('kendaraan-dinas.show', $kdo) }}" class="font-bold text-slate-900 text-xs hover:text-blue-600 transition-colors block truncate">
                                         {{ $kdo->merek }} {{ $kdo->tipe }}
                                     </a>
-                                    <div class="text-[11px] text-slate-400">
+                                    <div class="text-[11px] text-slate-400 truncate">
                                         {{ $kdo->jenis_kendaraan }}
                                     </div>
                                 </div>
                             </div>
                         </td>
                         <td class="px-5 py-4 text-xs">
-                            <span class="font-semibold text-slate-800">{{ $kdo->perangkatDaerah->nama_instansi }}</span>
+                            <span class="font-semibold text-slate-800 block truncate" title="{{ $kdo->perangkatDaerah->nama_instansi }}">{{ $kdo->perangkatDaerah->nama_instansi }}</span>
                             <div class="text-[11px] text-slate-400">Kode: {{ $kdo->perangkatDaerah->kode_opd }}</div>
                         </td>
                         <td class="px-5 py-4 text-xs">
@@ -133,7 +133,7 @@
                                 <div class="text-[11px] text-slate-400">NIP: {{ $kdo->penanggungJawab->nip }}</div>
                                 <div class="text-[10px] text-slate-500">{{ $kdo->penanggungJawab->jabatan }}</div>
                             @else
-                                <span class="inline-flex items-center text-[11px] text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full font-medium">
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
                                     Belum ditugaskan
                                 </span>
                             @endif
@@ -142,33 +142,33 @@
                             <div>{{ $kdo->warna }}</div>
                             <div class="text-slate-400 text-[11px]">Tahun {{ $kdo->tahun_produksi }}</div>
                         </td>
-                        <td class="px-5 py-4 text-xs">
+                        <td class="px-5 py-4 text-xs text-center">
                             @if($kdo->kondisi === 'Baik')
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600 mr-1.5"></span>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>
                                     Baik
                                 </span>
                             @elseif($kdo->kondisi === 'Rusak Ringan')
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-800">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600 mr-1.5"></span>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>
                                     Rusak Ringan
                                 </span>
                             @else
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 text-rose-800">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-600 mr-1.5"></span>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span>
                                     Rusak Berat
                                 </span>
                             @endif
                         </td>
                         <td class="px-5 py-4 text-xs text-center">
-                            <div class="flex items-center justify-center space-x-1.5">
-                                <a href="{{ route('kendaraan-dinas.show', $kdo) }}" class="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Lihat Detail">
+                            <div class="flex items-center justify-center space-x-1">
+                                <a href="{{ route('kendaraan-dinas.show', $kdo) }}" class="p-1.5 rounded-lg text-slate-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Lihat Detail">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                 </a>
-                                <a href="{{ route('kendaraan-dinas.edit', $kdo) }}" class="p-1.5 rounded-lg text-slate-500 hover:text-amber-600 hover:bg-amber-50 transition-colors" title="Ubah Data">
+                                <a href="{{ route('kendaraan-dinas.edit', $kdo) }}" class="p-1.5 rounded-lg text-slate-400 hover:text-amber-600 hover:bg-amber-50 transition-colors" title="Ubah Data">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
                                 </a>
-                                <button type="button" onclick="openDeleteModal('{{ route('kendaraan-dinas.destroy', $kdo) }}', 'Kendaraan Dinas Plat {{ $kdo->no_polisi }} ({{ $kdo->merek }} {{ $kdo->tipe }})')" class="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition-colors" title="Hapus Data">
+                                <button type="button" onclick="openDeleteModal('{{ route('kendaraan-dinas.destroy', $kdo) }}', 'Kendaraan Dinas Plat {{ $kdo->no_polisi }} ({{ $kdo->merek }} {{ $kdo->tipe }})')" class="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors" title="Hapus Data">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                                 </button>
                             </div>

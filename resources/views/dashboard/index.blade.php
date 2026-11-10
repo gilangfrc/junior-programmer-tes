@@ -135,14 +135,14 @@
             </div>
 
             <div class="overflow-x-auto flex-grow">
-                <table class="w-full text-left text-sm">
+                <table class="w-full text-left text-sm min-w-[650px]">
                     <thead class="bg-slate-50/75 text-slate-500 text-xs uppercase font-semibold border-b border-slate-100">
                         <tr>
-                            <th class="px-5 py-3">Plat & Kendaraan</th>
-                            <th class="px-5 py-3">Perangkat Daerah</th>
-                            <th class="px-5 py-3">Penanggung Jawab (PNS)</th>
-                            <th class="px-5 py-3">Kondisi</th>
-                            <th class="px-5 py-3 text-right">Aksi</th>
+                            <th class="px-5 py-3 whitespace-nowrap">Plat & Kendaraan</th>
+                            <th class="px-5 py-3 whitespace-nowrap">Perangkat Daerah</th>
+                            <th class="px-5 py-3 whitespace-nowrap">Penanggung Jawab (PNS)</th>
+                            <th class="px-5 py-3 whitespace-nowrap">Kondisi</th>
+                            <th class="px-5 py-3 text-right whitespace-nowrap">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
