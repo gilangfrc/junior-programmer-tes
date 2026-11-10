@@ -171,6 +171,7 @@ class KendaraanDinasTest extends TestCase
 
         $storeResponse->assertStatus(201);
         $storeResponse->assertJsonPath('data.no_polisi', 'B 5555 PQ');
+        $storeResponse->assertJsonCount(1, 'data.riwayat_kondisi');
         $createdId = $storeResponse->json('data.id');
 
         // 3. GET Detail via REST API
@@ -178,7 +179,7 @@ class KendaraanDinasTest extends TestCase
         $showResponse->assertStatus(200);
         $showResponse->assertJsonPath('data.merek', 'Toyota');
 
-        // 4. PUT Update via REST API
+        // 4. PUT Update via REST API (triggers automatic Audit Trail entry)
         $updateResponse = $this->putJson("/api/v1/kendaraan-dinas/{$createdId}", [
             'perangkat_daerah_id' => $this->opd->id,
             'no_polisi' => 'B 5555 PQ',
@@ -191,9 +192,19 @@ class KendaraanDinasTest extends TestCase
         ]);
         $updateResponse->assertStatus(200);
         $updateResponse->assertJsonPath('data.kondisi', 'Rusak Ringan');
+        $updateResponse->assertJsonCount(2, 'data.riwayat_kondisi');
 
         // 5. DELETE via REST API
         $deleteResponse = $this->deleteJson("/api/v1/kendaraan-dinas/{$createdId}");
         $deleteResponse->assertStatus(200);
+    }
+
+    public function test_can_render_api_docs_page(): void
+    {
+        $response = $this->get('/api-docs');
+        $response->assertStatus(200);
+        $response->assertSee('Dokumentasi & Interactive API Tester', false);
+        $response->assertSee('Semua Endpoint (20)');
+        $response->assertSee('Test Update + Audit Trail');
     }
 }

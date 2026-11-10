@@ -189,9 +189,6 @@
         <div>
             Menampilkan <strong class="text-slate-800">{{ $kendaraanDinas->firstItem() ?? 0 }} - {{ $kendaraanDinas->lastItem() ?? 0 }}</strong> dari <strong class="text-slate-800">{{ $kendaraanDinas->total() }}</strong> unit KDO terdaftar
         </div>
-        <div class="hidden sm:block text-[11px] text-slate-400">
-            Klik nomor polisi atau tombol aksi untuk melihat Kartu Inventaris Barang (KIB)
-        </div>
     </div>
 
     <!-- Data Table -->

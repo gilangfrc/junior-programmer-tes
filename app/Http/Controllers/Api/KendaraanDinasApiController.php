@@ -83,7 +83,18 @@ class KendaraanDinasApiController extends Controller
         }
 
         $kdo = KendaraanDinas::create($validated);
-        $kdo->load(['perangkatDaerah', 'penanggungJawab']);
+
+        // Catat kondisi awal ke audit trail BMD
+        RiwayatKondisi::create([
+            'kendaraan_dinas_id' => $kdo->id,
+            'tanggal_pemeriksaan' => now()->toDateString(),
+            'kondisi_sebelum' => $kdo->kondisi,
+            'kondisi_sesudah' => $kdo->kondisi,
+            'catatan_kerusakan' => 'Pencatatan awal inventaris Barang Milik Daerah (BMD) via API.',
+            'petugas_pemeriksa' => 'Admin Sistem BMD',
+        ]);
+
+        $kdo->load(['perangkatDaerah', 'penanggungJawab', 'riwayatKondisi']);
 
         return response()->json([
             'success' => true,
