@@ -27,64 +27,183 @@
         </div>
     </div>
 
-    <!-- Filter & Search Bar -->
-    <div class="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/80 shadow-sm">
-        <form method="GET" action="{{ route('kendaraan-dinas.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-            <!-- Search -->
-            <div class="lg:col-span-2">
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">Pencarian Cepat</label>
-                <div class="relative">
-                    <input type="text" name="search" value="{{ request('search') }}" autocomplete="off" placeholder="Cari no polisi, merek, tipe, atau nama PNS..." class="form-control-smooth w-full text-xs rounded-xl border border-slate-200 py-2.5 pl-9 pr-3 text-slate-800 placeholder:text-slate-400">
-                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                </div>
-            </div>
+    <!-- Enterprise Quick Status Filter Tabs -->
+    <div class="flex items-center space-x-2 overflow-x-auto pb-1 no-print">
+        <!-- Tab: Semua -->
+        <a href="{{ route('kendaraan-dinas.index', array_merge(request()->except('kondisi', 'page'), [])) }}" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0 {{ !request('kondisi') ? 'bg-blue-600 text-white shadow-md shadow-blue-600/25' : 'bg-white border border-slate-200/90 text-slate-600 hover:bg-slate-50 hover:text-slate-900 shadow-sm' }}">
+            <span>Semua Armada</span>
+            <span class="px-1.5 py-0.5 rounded-md text-[10px] {{ !request('kondisi') ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600' }}">{{ $kondisiCounts['all'] }}</span>
+        </a>
+        
+        <!-- Tab: Baik -->
+        <a href="{{ route('kendaraan-dinas.index', array_merge(request()->except('kondisi', 'page'), ['kondisi' => 'Baik'])) }}" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0 {{ request('kondisi') === 'Baik' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/25' : 'bg-white border border-slate-200/90 text-slate-600 hover:bg-slate-50 hover:text-slate-900 shadow-sm' }}">
+            <span class="w-2 h-2 rounded-full {{ request('kondisi') === 'Baik' ? 'bg-white' : 'bg-emerald-500' }}"></span>
+            <span>Baik</span>
+            <span class="px-1.5 py-0.5 rounded-md text-[10px] {{ request('kondisi') === 'Baik' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600' }}">{{ $kondisiCounts['Baik'] }}</span>
+        </a>
 
-            <!-- Filter Kondisi -->
-            <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">Kondisi Fisik</label>
-                <div class="relative">
-                    <select name="kondisi" class="form-control-smooth appearance-none w-full text-xs font-medium rounded-xl border border-slate-200 py-2.5 pl-3.5 pr-11 text-slate-800 bg-white cursor-pointer">
-                        <option value="">-- Semua Kondisi --</option>
-                        <option value="Baik" {{ request('kondisi') === 'Baik' ? 'selected' : '' }}>Baik</option>
-                        <option value="Rusak Ringan" {{ request('kondisi') === 'Rusak Ringan' ? 'selected' : '' }}>Rusak Ringan</option>
-                        <option value="Rusak Berat" {{ request('kondisi') === 'Rusak Berat' ? 'selected' : '' }}>Rusak Berat</option>
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        <!-- Tab: Rusak Ringan -->
+        <a href="{{ route('kendaraan-dinas.index', array_merge(request()->except('kondisi', 'page'), ['kondisi' => 'Rusak Ringan'])) }}" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0 {{ request('kondisi') === 'Rusak Ringan' ? 'bg-amber-500 text-white shadow-md shadow-amber-500/25' : 'bg-white border border-slate-200/90 text-slate-600 hover:bg-slate-50 hover:text-slate-900 shadow-sm' }}">
+            <span class="w-2 h-2 rounded-full {{ request('kondisi') === 'Rusak Ringan' ? 'bg-white' : 'bg-amber-500' }}"></span>
+            <span>Rusak Ringan</span>
+            <span class="px-1.5 py-0.5 rounded-md text-[10px] {{ request('kondisi') === 'Rusak Ringan' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600' }}">{{ $kondisiCounts['Rusak Ringan'] }}</span>
+        </a>
+
+        <!-- Tab: Rusak Berat -->
+        <a href="{{ route('kendaraan-dinas.index', array_merge(request()->except('kondisi', 'page'), ['kondisi' => 'Rusak Berat'])) }}" class="inline-flex items-center space-x-2 px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex-shrink-0 {{ request('kondisi') === 'Rusak Berat' ? 'bg-rose-600 text-white shadow-md shadow-rose-600/25' : 'bg-white border border-slate-200/90 text-slate-600 hover:bg-slate-50 hover:text-slate-900 shadow-sm' }}">
+            <span class="w-2 h-2 rounded-full {{ request('kondisi') === 'Rusak Berat' ? 'bg-white' : 'bg-rose-500' }}"></span>
+            <span>Rusak Berat</span>
+            <span class="px-1.5 py-0.5 rounded-md text-[10px] {{ request('kondisi') === 'Rusak Berat' ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-600' }}">{{ $kondisiCounts['Rusak Berat'] }}</span>
+        </a>
+    </div>
+
+    <!-- Enterprise Filter & Search Control Bar -->
+    <div class="bg-white p-3.5 rounded-2xl border border-slate-200/80 shadow-sm space-y-3 no-print">
+        <form method="GET" action="{{ route('kendaraan-dinas.index') }}" id="filterKdoForm">
+            @if(request('kondisi'))
+                <input type="hidden" name="kondisi" value="{{ request('kondisi') }}">
+            @endif
+
+            <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-3">
+                <!-- Search Input with Auto-Clear Icon -->
+                <div class="flex-1 relative min-w-[280px]">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        id="kdoSearchInput" 
+                        value="{{ request('search') }}" 
+                        autocomplete="off" 
+                        placeholder="Cari nomor polisi (plat), merek, tipe, atau pemegang..." 
+                        class="form-control-smooth w-full text-xs rounded-xl border border-slate-200 py-2.5 pl-9 pr-8 text-slate-800 placeholder:text-slate-400"
+                    >
+                    <svg class="w-4 h-4 text-slate-400 absolute left-3 top-3 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    @if(request('search'))
+                        <button type="button" onclick="document.getElementById('kdoSearchInput').value=''; document.getElementById('filterKdoForm').submit();" class="absolute right-2.5 top-2.5 text-slate-400 hover:text-slate-600 p-0.5" title="Hapus Pencarian">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                        </button>
+                    @endif
+                </div>
+
+                <!-- Compact Dropdown Filter Controls -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <!-- Perangkat Daerah Filter -->
+                    <div class="relative">
+                        <select name="perangkat_daerah_id" onchange="this.form.submit()" class="form-control-smooth appearance-none text-xs font-semibold rounded-xl border {{ request('perangkat_daerah_id') ? 'border-blue-500 bg-blue-50/70 text-blue-700' : 'border-slate-200 bg-slate-50/70 text-slate-700' }} py-2.5 pl-3.5 pr-8 cursor-pointer hover:bg-slate-100 transition-all">
+                            <option value="">🏢 Semua Instansi / OPD</option>
+                            @foreach($perangkatDaerahs as $pd)
+                                <option value="{{ $pd->id }}" {{ request('perangkat_daerah_id') == $pd->id ? 'selected' : '' }}>
+                                    {{ $pd->singkatan ?? $pd->nama_instansi }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-slate-400">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Filter Perangkat Daerah -->
-            <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1.5">Perangkat Daerah</label>
-                <div class="relative">
-                    <select name="perangkat_daerah_id" class="form-control-smooth appearance-none w-full text-xs font-medium rounded-xl border border-slate-200 py-2.5 pl-3.5 pr-11 text-slate-800 bg-white cursor-pointer">
-                        <option value="">-- Semua Dinas/OPD --</option>
-                        @foreach($perangkatDaerahs as $pd)
-                            <option value="{{ $pd->id }}" {{ request('perangkat_daerah_id') == $pd->id ? 'selected' : '' }}>
-                                {{ $pd->singkatan ?? $pd->nama_instansi }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    <!-- Jenis Kendaraan Filter -->
+                    <div class="relative">
+                        <select name="jenis_kendaraan" onchange="this.form.submit()" class="form-control-smooth appearance-none text-xs font-semibold rounded-xl border {{ request('jenis_kendaraan') ? 'border-blue-500 bg-blue-50/70 text-blue-700' : 'border-slate-200 bg-slate-50/70 text-slate-700' }} py-2.5 pl-3.5 pr-8 cursor-pointer hover:bg-slate-100 transition-all">
+                            <option value="">🚗 Semua Jenis</option>
+                            <option value="Roda 4" {{ request('jenis_kendaraan') === 'Roda 4' ? 'selected' : '' }}>Roda 4 (Mobil Dinas)</option>
+                            <option value="Roda 2" {{ request('jenis_kendaraan') === 'Roda 2' ? 'selected' : '' }}>Roda 2 (Motor)</option>
+                            <option value="Roda 6 / Truk / Bus" {{ request('jenis_kendaraan') === 'Roda 6 / Truk / Bus' ? 'selected' : '' }}>Roda 6 / Bus / Truk</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-slate-400">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </div>
                     </div>
-                </div>
-            </div>
 
-            <!-- Buttons -->
-            <div class="flex items-end space-x-2">
-                <button type="submit" class="flex-1 text-xs font-semibold px-4 py-2.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition-colors">
-                    Filter Data
-                </button>
-                @if(request()->hasAny(['search', 'kondisi', 'perangkat_daerah_id', 'jenis_kendaraan']))
-                    <a href="{{ route('kendaraan-dinas.index') }}" class="text-xs px-3 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-100 transition-colors" title="Reset Filter">
-                        Reset
-                    </a>
-                @endif
+                    <!-- Status Pemegang Filter -->
+                    <div class="relative">
+                        <select name="status_pemegang" onchange="this.form.submit()" class="form-control-smooth appearance-none text-xs font-semibold rounded-xl border {{ request('status_pemegang') ? 'border-blue-500 bg-blue-50/70 text-blue-700' : 'border-slate-200 bg-slate-50/70 text-slate-700' }} py-2.5 pl-3.5 pr-8 cursor-pointer hover:bg-slate-100 transition-all">
+                            <option value="">👤 Status Pemegang</option>
+                            <option value="assigned" {{ request('status_pemegang') === 'assigned' ? 'selected' : '' }}>Ada Pemegang PNS</option>
+                            <option value="unassigned" {{ request('status_pemegang') === 'unassigned' ? 'selected' : '' }}>Pool Dinas (Belum Ada)</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-slate-400">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </div>
+                    </div>
+
+                    <!-- Sorting Order -->
+                    <div class="relative">
+                        <select name="sort" onchange="this.form.submit()" class="form-control-smooth appearance-none text-xs font-semibold rounded-xl border border-slate-200 bg-slate-50/70 text-slate-700 py-2.5 pl-3.5 pr-8 cursor-pointer hover:bg-slate-100 transition-all">
+                            <option value="terbaru" {{ request('sort') === 'terbaru' ? 'selected' : '' }}>Urut: Terbaru</option>
+                            <option value="terlama" {{ request('sort') === 'terlama' ? 'selected' : '' }}>Urut: Terlama</option>
+                            <option value="plat_asc" {{ request('sort') === 'plat_asc' ? 'selected' : '' }}>Plat Nomor (A-Z)</option>
+                            <option value="tahun_desc" {{ request('sort') === 'tahun_desc' ? 'selected' : '' }}>Tahun Terbaru</option>
+                            <option value="tahun_asc" {{ request('sort') === 'tahun_asc' ? 'selected' : '' }}>Tahun Terlama</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2.5 text-slate-400">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="inline-flex items-center space-x-1.5 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow-sm">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                        <span>Cari</span>
+                    </button>
+                </div>
             </div>
         </form>
+
+        <!-- Active Filter Removable Tags (Chips) -->
+        @if(request()->hasAny(['search', 'kondisi', 'perangkat_daerah_id', 'jenis_kendaraan', 'status_pemegang']) && (request('search') || request('kondisi') || request('perangkat_daerah_id') || request('jenis_kendaraan') || request('status_pemegang')))
+            <div class="pt-2.5 border-t border-slate-100 flex flex-wrap items-center gap-2 text-xs">
+                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Filter Aktif:</span>
+                
+                @if(request('search'))
+                    <span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-medium">
+                        <span>Pencarian: "<strong>{{ request('search') }}</strong>"</span>
+                        <a href="{{ route('kendaraan-dinas.index', request()->except('search', 'page')) }}" class="hover:text-rose-600 font-bold ml-1 text-sm">&times;</a>
+                    </span>
+                @endif
+
+                @if(request('kondisi'))
+                    <span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 font-medium border border-blue-200">
+                        <span>Kondisi: <strong>{{ request('kondisi') }}</strong></span>
+                        <a href="{{ route('kendaraan-dinas.index', request()->except('kondisi', 'page')) }}" class="hover:text-rose-600 font-bold ml-1 text-sm">&times;</a>
+                    </span>
+                @endif
+
+                @if(request('perangkat_daerah_id'))
+                    @php $selectedPd = $perangkatDaerahs->firstWhere('id', request('perangkat_daerah_id')); @endphp
+                    <span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 font-medium border border-indigo-200">
+                        <span>OPD: <strong>{{ $selectedPd->singkatan ?? $selectedPd->nama_instansi }}</strong></span>
+                        <a href="{{ route('kendaraan-dinas.index', request()->except('perangkat_daerah_id', 'page')) }}" class="hover:text-rose-600 font-bold ml-1 text-sm">&times;</a>
+                    </span>
+                @endif
+
+                @if(request('jenis_kendaraan'))
+                    <span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-medium border border-slate-200">
+                        <span>Jenis: <strong>{{ request('jenis_kendaraan') }}</strong></span>
+                        <a href="{{ route('kendaraan-dinas.index', request()->except('jenis_kendaraan', 'page')) }}" class="hover:text-rose-600 font-bold ml-1 text-sm">&times;</a>
+                    </span>
+                @endif
+
+                @if(request('status_pemegang'))
+                    <span class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 font-medium border border-slate-200">
+                        <span>Pemegang: <strong>{{ request('status_pemegang') === 'assigned' ? 'Ada Pegawai' : 'Pool Dinas' }}</strong></span>
+                        <a href="{{ route('kendaraan-dinas.index', request()->except('status_pemegang', 'page')) }}" class="hover:text-rose-600 font-bold ml-1 text-sm">&times;</a>
+                    </span>
+                @endif
+
+                <a href="{{ route('kendaraan-dinas.index') }}" class="text-[11px] font-bold text-rose-600 hover:text-rose-700 hover:underline ml-1">
+                    Reset Semua
+                </a>
+            </div>
+        @endif
+    </div>
+
+    <!-- Table Header Info Bar -->
+    <div class="flex items-center justify-between text-xs text-slate-500 px-1">
+        <div>
+            Menampilkan <strong class="text-slate-800">{{ $kendaraanDinas->firstItem() ?? 0 }} - {{ $kendaraanDinas->lastItem() ?? 0 }}</strong> dari <strong class="text-slate-800">{{ $kendaraanDinas->total() }}</strong> unit KDO terdaftar
+        </div>
+        <div class="hidden sm:block text-[11px] text-slate-400">
+            Klik nomor polisi atau tombol aksi untuk melihat Kartu Inventaris Barang (KIB)
+        </div>
     </div>
 
     <!-- Data Table -->

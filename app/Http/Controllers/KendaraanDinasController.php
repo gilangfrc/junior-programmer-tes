@@ -47,10 +47,46 @@ class KendaraanDinasController extends Controller
             $query->where('jenis_kendaraan', $jenis);
         }
 
-        $kendaraanDinas = $query->latest('id')->paginate(10)->withQueryString();
+        // Filter status pemegang (assigned / pool)
+        if ($statusPemegang = $request->input('status_pemegang')) {
+            if ($statusPemegang === 'assigned') {
+                $query->whereNotNull('penanggung_jawab_id');
+            } elseif ($statusPemegang === 'unassigned') {
+                $query->whereNull('penanggung_jawab_id');
+            }
+        }
+
+        // Sorting fleksibel
+        $sort = $request->input('sort', 'terbaru');
+        switch ($sort) {
+            case 'terlama':
+                $query->oldest('id');
+                break;
+            case 'tahun_desc':
+                $query->orderByDesc('tahun_produksi')->latest('id');
+                break;
+            case 'tahun_asc':
+                $query->orderBy('tahun_produksi')->latest('id');
+                break;
+            case 'plat_asc':
+                $query->orderBy('no_polisi')->latest('id');
+                break;
+            default:
+                $query->latest('id');
+                break;
+        }
+
+        $kendaraanDinas = $query->paginate(10)->withQueryString();
         $perangkatDaerahs = PerangkatDaerah::orderBy('nama_instansi')->get();
 
-        return view('kendaraan_dinas.index', compact('kendaraanDinas', 'perangkatDaerahs'));
+        $kondisiCounts = [
+            'all' => KendaraanDinas::count(),
+            'Baik' => KendaraanDinas::where('kondisi', 'Baik')->count(),
+            'Rusak Ringan' => KendaraanDinas::where('kondisi', 'Rusak Ringan')->count(),
+            'Rusak Berat' => KendaraanDinas::where('kondisi', 'Rusak Berat')->count(),
+        ];
+
+        return view('kendaraan_dinas.index', compact('kendaraanDinas', 'perangkatDaerahs', 'kondisiCounts'));
     }
 
     public function create(): View

@@ -65,6 +65,11 @@ class KendaraanDinasTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('B 1001 PQ');
         $response->assertSee('Innova Zenix');
+
+        // Test filter status pemegang & kondisi
+        $filterResponse = $this->get('/kendaraan-dinas?kondisi=Baik&status_pemegang=assigned');
+        $filterResponse->assertStatus(200);
+        $filterResponse->assertSee('B 1001 PQ');
     }
 
     public function test_can_create_kendaraan_dinas(): void

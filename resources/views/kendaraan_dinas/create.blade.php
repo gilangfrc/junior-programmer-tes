@@ -175,7 +175,7 @@
         <!-- Section 2: Kepemilikan & Penanggung Jawab -->
         <div class="space-y-5 pt-3">
             <div class="flex items-center space-x-2.5 pb-3 border-b border-slate-100">
-                <span class="w-7 h-7 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center text-xs font-black">2</span>
+                <span class="w-7 h-7 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center text-xs font-black">2</span>
                 <div>
                     <h3 class="text-sm font-bold text-slate-900">Alokasi Instansi & Penanggung Jawab (PNS)</h3>
                     <p class="text-[11px] text-slate-400">Penetapan Perangkat Daerah pemilik dan pegawai pemegang hak pakai</p>
@@ -201,23 +201,91 @@
                     </div>
                 </div>
 
-                <!-- Penanggung Jawab PNS (Custom Select) -->
+                <!-- Penanggung Jawab PNS (Searchable Custom Dropdown) -->
                 <div>
                     <label class="block text-xs font-bold text-slate-700 mb-1.5">Pegawai Penanggung Jawab (PNS)</label>
-                    <div class="relative">
-                        <select name="penanggung_jawab_id" class="form-control-smooth appearance-none w-full text-xs rounded-xl border border-slate-200 py-2.5 pl-3.5 pr-11 text-slate-800 bg-white cursor-pointer font-medium">
-                            <option value="">-- Belum Ditugaskan / Pool Dinas --</option>
-                            @foreach($pegawais as $pns)
-                                <option value="{{ $pns->id }}" {{ old('penanggung_jawab_id') == $pns->id ? 'selected' : '' }}>
-                                    {{ $pns->nama }} (NIP: {{ $pns->nip }}) - {{ $pns->perangkatDaerah->singkatan ?? $pns->perangkatDaerah->nama_instansi }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    <div class="relative" id="pnsDropdownWrapper">
+                        <!-- Hidden input for form submission -->
+                        <input type="hidden" name="penanggung_jawab_id" id="penanggung_jawab_id" value="{{ old('penanggung_jawab_id') }}">
+
+                        <!-- Trigger Button -->
+                        <button 
+                            type="button" 
+                            id="pnsTriggerBtn" 
+                            onclick="togglePnsDropdown()" 
+                            class="form-control-smooth w-full text-xs rounded-xl border border-slate-200 py-2.5 pl-3.5 pr-10 text-left bg-white flex items-center justify-between cursor-pointer focus:outline-none"
+                        >
+                            <div class="flex items-center space-x-2 truncate" id="pnsSelectedDisplay">
+                                <span class="w-2 h-2 rounded-full bg-slate-300 flex-shrink-0"></span>
+                                <span class="text-slate-500 font-medium truncate">-- Belum Ditugaskan / Pool Dinas --</span>
+                            </div>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400">
+                                <svg id="pnsChevron" class="w-4 h-4 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </button>
+
+                        <!-- Custom Searchable Dropdown Popover -->
+                        <div 
+                            id="pnsDropdownPopover" 
+                            class="absolute left-0 right-0 top-full mt-1.5 bg-white rounded-2xl border border-slate-200 shadow-2xl z-50 hidden overflow-hidden transition-all duration-200"
+                        >
+                            <!-- Search Input Header -->
+                            <div class="p-2.5 bg-slate-50 border-b border-slate-100">
+                                <div class="relative">
+                                    <input 
+                                        type="text" 
+                                        id="pnsSearchBox" 
+                                        placeholder="Ketik nama pegawai, NIP, atau dinas..." 
+                                        autocomplete="off" 
+                                        oninput="filterPnsList(this.value)"
+                                        class="w-full text-xs rounded-xl border border-slate-200 py-2 pl-8 pr-3 text-slate-800 bg-white focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                    >
+                                    <svg class="w-4 h-4 text-slate-400 absolute left-2.5 top-2.5 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                                </div>
+                            </div>
+
+                            <!-- List of PNS Options -->
+                            <div class="max-h-60 overflow-y-auto divide-y divide-slate-100" id="pnsOptionsContainer">
+                                <!-- Option: Belum Ditugaskan / Pool Dinas -->
+                                <div 
+                                    onclick="selectPnsItem('', '-- Belum Ditugaskan / Pool Dinas --', '', 'Pool Dinas')"
+                                    class="pns-item px-3.5 py-2.5 hover:bg-blue-50/70 cursor-pointer flex items-center justify-between transition-colors"
+                                    data-id=""
+                                    data-search="belum ditugaskan pool dinas tanpa pemegang"
+                                >
+                                    <div class="flex items-center space-x-2">
+                                        <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+                                        <span class="text-xs font-semibold text-slate-600">-- Belum Ditugaskan / Pool Dinas --</span>
+                                    </div>
+                                    <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">Pool</span>
+                                </div>
+
+                                <!-- Pegawai PNS List -->
+                                @foreach($pegawais as $pns)
+                                    <div 
+                                        onclick="selectPnsItem('{{ $pns->id }}', '{{ addslashes($pns->nama) }}', '{{ $pns->nip }}', '{{ $pns->perangkatDaerah->singkatan ?? $pns->perangkatDaerah->nama_instansi }}')"
+                                        class="pns-item px-3.5 py-2.5 hover:bg-blue-50/70 cursor-pointer flex items-center justify-between transition-colors"
+                                        data-id="{{ $pns->id }}"
+                                        data-search="{{ strtolower($pns->nama . ' ' . $pns->nip . ' ' . $pns->jabatan . ' ' . ($pns->perangkatDaerah->singkatan ?? '') . ' ' . $pns->perangkatDaerah->nama_instansi) }}"
+                                    >
+                                        <div class="min-w-0 pr-2">
+                                            <div class="font-bold text-xs text-slate-900 truncate">{{ $pns->nama }}</div>
+                                            <div class="text-[10px] text-slate-400 font-mono">NIP: {{ $pns->nip }} &bull; {{ $pns->jabatan }}</div>
+                                        </div>
+                                        <span class="flex-shrink-0 text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                                            {{ $pns->perangkatDaerah->singkatan ?? Str::limit($pns->perangkatDaerah->nama_instansi, 12) }}
+                                        </span>
+                                    </div>
+                                @endforeach
+                            </div>
+
+                            <!-- Empty Search Result -->
+                            <div id="pnsEmptyState" class="hidden p-6 text-center text-xs text-slate-400">
+                                Tidak ada pegawai PNS yang cocok dengan pencarian.
+                            </div>
                         </div>
                     </div>
-                    <p class="text-[10px] text-slate-400 mt-1">Kosongkan jika kendaraan berada di pool dinas tanpa pemegang tetap.</p>
+                    <p class="text-[10px] text-slate-400 mt-1">Dapat dikosongkan jika kendaraan berada di pool dinas tanpa pemegang tetap.</p>
                 </div>
             </div>
         </div>
@@ -225,7 +293,7 @@
         <!-- Section 3: Data Teknis & Catatan BMD -->
         <div class="space-y-5 pt-3">
             <div class="flex items-center space-x-2.5 pb-3 border-b border-slate-100">
-                <span class="w-7 h-7 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center text-xs font-black">3</span>
+                <span class="w-7 h-7 rounded-xl bg-blue-50 text-blue-600 border border-blue-200 flex items-center justify-center text-xs font-black">3</span>
                 <div>
                     <h3 class="text-sm font-bold text-slate-900">Identifikasi Mesin/Rangka & Catatan Khusus</h3>
                     <p class="text-[11px] text-slate-400">Nomor rangka dan mesin sesuai BPKB/STNK untuk inventarisasi resmi</p>
@@ -350,5 +418,103 @@
             fileSizeLabel.textContent = `Ukuran: ${sizeInMB} MB &bull; Siap diunggah`;
         }
     }
+
+    // Custom Searchable PNS Dropdown Logic
+    function togglePnsDropdown() {
+        const popover = document.getElementById('pnsDropdownPopover');
+        const chevron = document.getElementById('pnsChevron');
+        const isHidden = popover.classList.contains('hidden');
+
+        if (isHidden) {
+            popover.classList.remove('hidden');
+            chevron.classList.add('rotate-180');
+            const searchBox = document.getElementById('pnsSearchBox');
+            searchBox.value = '';
+            filterPnsList('');
+            setTimeout(() => searchBox.focus(), 50);
+        } else {
+            closePnsDropdown();
+        }
+    }
+
+    function closePnsDropdown() {
+        const popover = document.getElementById('pnsDropdownPopover');
+        const chevron = document.getElementById('pnsChevron');
+        if (popover) {
+            popover.classList.add('hidden');
+            chevron.classList.remove('rotate-180');
+        }
+    }
+
+    function filterPnsList(query) {
+        const q = query.toLowerCase().trim();
+        const items = document.querySelectorAll('.pns-item');
+        let visibleCount = 0;
+
+        items.forEach(item => {
+            const searchData = item.getAttribute('data-search') || '';
+            if (searchData.includes(q)) {
+                item.classList.remove('hidden');
+                visibleCount++;
+            } else {
+                item.classList.add('hidden');
+            }
+        });
+
+        const emptyState = document.getElementById('pnsEmptyState');
+        if (visibleCount === 0) {
+            emptyState.classList.remove('hidden');
+        } else {
+            emptyState.classList.add('hidden');
+        }
+    }
+
+    function selectPnsItem(id, nama, nip, instansi) {
+        const hiddenInput = document.getElementById('penanggung_jawab_id');
+        const display = document.getElementById('pnsSelectedDisplay');
+
+        hiddenInput.value = id;
+
+        if (id) {
+            display.innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-blue-600 flex-shrink-0"></span>
+                <span class="font-bold text-slate-800 text-xs truncate">${nama}</span>
+                <span class="text-[10px] text-slate-400 font-mono truncate hidden sm:inline">(NIP. ${nip})</span>
+                <span class="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 text-[10px] font-bold border border-blue-200 ml-1 flex-shrink-0">${instansi}</span>
+            `;
+        } else {
+            display.innerHTML = `
+                <span class="w-2 h-2 rounded-full bg-slate-300 flex-shrink-0"></span>
+                <span class="text-slate-500 font-medium truncate">-- Belum Ditugaskan / Pool Dinas --</span>
+            `;
+        }
+
+        closePnsDropdown();
+    }
+
+    // Close on click outside & Escape key
+    document.addEventListener('click', function(e) {
+        const wrapper = document.getElementById('pnsDropdownWrapper');
+        if (wrapper && !wrapper.contains(e.target)) {
+            closePnsDropdown();
+        }
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closePnsDropdown();
+        }
+    });
+
+    // Initialize with old input on page load if set
+    document.addEventListener('DOMContentLoaded', function() {
+        const currentVal = document.getElementById('penanggung_jawab_id').value;
+        if (currentVal) {
+            const matchItem = document.querySelector(`.pns-item[data-id="${currentVal}"]`);
+            if (matchItem) {
+                matchItem.click();
+            }
+        }
+    });
 </script>
 @endpush

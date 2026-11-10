@@ -206,12 +206,6 @@
                     <span class="font-medium">{{ \Carbon\Carbon::now()->translatedFormat('l, d F Y') }}</span>
                 </div>
 
-                <!-- Database Status Badge -->
-                <div class="hidden sm:flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-emerald-50/80 border border-emerald-200/80 text-xs">
-                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span class="text-[11px] font-bold text-emerald-800">MySQL Online</span>
-                </div>
-
                 <!-- Operator Profile Badge -->
                 <div class="flex items-center space-x-2.5 pl-2 sm:border-l sm:border-slate-200">
                     <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-slate-900 to-blue-900 text-white flex items-center justify-center font-black text-xs shadow-sm">
@@ -268,9 +262,6 @@
             <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
                 <div>
                     <strong>SIM-KDO</strong> &bull; Sistem Inventarisasi Kendaraan Dinas Operasional (Barang Milik Daerah)
-                </div>
-                <div class="text-slate-400">
-                    Ujian Praktik Junior Programmer &bull; Laravel 11 + Tailwind CSS + MySQL
                 </div>
             </div>
         </footer>
