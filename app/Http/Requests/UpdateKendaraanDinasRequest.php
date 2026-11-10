@@ -14,7 +14,8 @@ class UpdateKendaraanDinasRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('kendaraan_dina')?->id ?? $this->route('kendaraan_dinas')?->id ?? $this->route('id') ?? $this->id;
+        $param = $this->route('kendaraan_dina') ?? $this->route('kendaraan_dinas') ?? $this->route('id');
+        $id = is_object($param) ? $param->id : ($param ?? $this->id);
 
         return [
             'perangkat_daerah_id' => ['required', 'exists:perangkat_daerahs,id'],

@@ -14,7 +14,8 @@ class UpdatePerangkatDaerahRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('perangkat_daerah')?->id ?? $this->route('id') ?? $this->id;
+        $param = $this->route('perangkat_daerah') ?? $this->route('id');
+        $id = is_object($param) ? $param->id : ($param ?? $this->id);
 
         return [
             'kode_opd' => [

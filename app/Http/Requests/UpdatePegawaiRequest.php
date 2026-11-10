@@ -14,7 +14,8 @@ class UpdatePegawaiRequest extends FormRequest
 
     public function rules(): array
     {
-        $id = $this->route('pegawai')?->id ?? $this->route('id') ?? $this->id;
+        $param = $this->route('pegawai') ?? $this->route('id');
+        $id = is_object($param) ? $param->id : ($param ?? $this->id);
 
         return [
             'perangkat_daerah_id' => ['required', 'exists:perangkat_daerahs,id'],
